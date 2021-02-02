@@ -15,6 +15,7 @@ namespace Otter {
 	{
 		coordinator.Init();
 		RegisterComponents();
+		RegisterSystems();
 
 		OnStart();
 
@@ -34,5 +35,10 @@ namespace Otter {
 	void Application::RegisterComponents()
 	{
 		coordinator.RegisterComponent<Transform2DComponent>();
+	}
+
+	void Application::RegisterSystems()
+	{
+
 	}
 }

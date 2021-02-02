@@ -6,6 +6,7 @@
 #include "Otter/Log.h"
 #include "Otter/Core/Coordinator.h"
 #include "Otter/Core/Types.h"
+#include "Otter/Core/System.h"
 
 // ---Entry Point---------------------
 #include "Otter/EntryPoint.h"

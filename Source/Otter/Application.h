@@ -15,6 +15,8 @@ namespace Otter {
 		void Run();
 
 		virtual void RegisterComponents();
+		virtual void RegisterSystems();
+
 		virtual void OnStart() = 0;
 		virtual void OnTick(float deltaTime) = 0;
 		virtual void OnStop() = 0;

@@ -39,6 +39,17 @@ namespace Otter {
 
 		void EnitySignatureChanged(EntityId entityId, Signature entitySignature);
 
+		template<typename T>
+		std::shared_ptr<T> GetSystem()
+		{
+			const char* typeName = typeid(T).name();
+
+			auto itr = systems.find(typeName);
+			OT_ASSERT(itr != systems.end(), "Attempted to get system before registered.");
+
+			return std::static_pointer_cast<T>(itr->second);
+		}
+
 	private:
 		// Map from system type string pointer to a signature
 		std::unordered_map<const char*, Signature> signatures{};

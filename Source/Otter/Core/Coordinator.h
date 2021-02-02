@@ -71,6 +71,12 @@ namespace Otter {
 			systemManager->SetSignature<T>(signature);
 		}
 
+		template<typename T>
+		std::shared_ptr<T> GetSystem()
+		{
+			return systemManager->GetSystem<T>();
+		}
+
 	private:
 		std::unique_ptr<ComponentManager> componentManager;
 		std::unique_ptr<EntityManager> entityManager;
