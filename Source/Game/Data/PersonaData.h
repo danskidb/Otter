@@ -5,7 +5,7 @@ namespace RpgGame {
 	using PersonaId = std::uint16_t;
 	using Level = std::uint8_t;
 
-	enum EElement {
+	enum class EElement {
 		Physical,
 		Gun,
 		Fire,
@@ -23,7 +23,7 @@ namespace RpgGame {
 		Healing,
 	};
 
-	enum EElementAffinity {
+	enum class EElementAffinity {
 		Normal,
 		Reflect,
 		Absorb,
@@ -32,7 +32,7 @@ namespace RpgGame {
 		Weak
 	};
 
-	enum EAilment {
+	enum class EAilment {
 		Down,
 		Burn,
 		Freeze,
@@ -53,7 +53,7 @@ namespace RpgGame {
 		Envy,
 	};
 
-	enum EArcana {
+	enum class EArcana {
 		Fool,
 		Magician,
 		Priestess,
@@ -77,10 +77,16 @@ namespace RpgGame {
 		Judgement,
 	};
 
-	enum ECombatSkillCostType {
+	enum class ECombatSkillCostType {
 		Fixed_SP,
 		Fixed_HP,
 		Percentage_HP,
+	};
+
+	enum class ECombatStartType {
+		Normal,
+		Ambush,
+		EnemyAdvantage
 	};
 
 	struct CombatStat {

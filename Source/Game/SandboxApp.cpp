@@ -55,7 +55,7 @@ void SandboxApp::OnStart()
 	coordinator.AddComponent<CombatComponent>(opponentEntityId, CombatComponent());
 
 	std::shared_ptr<CombatSystem> combatSystem = coordinator.GetSystem<CombatSystem>();
-	combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponentEntityId});
+	combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponentEntityId}, ECombatStartType::Normal);
 
 	int bp = 0;
 }
