@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
+    <ClInclude Include="Source\Game\Components\CombatComponent.h" />
     <ClInclude Include="Source\Game\Components\PersonaComponent.h" />
     <ClInclude Include="Source\Game\Data\PersonaData.h" />
     <ClInclude Include="Source\Game\SandboxApp.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="Source\Otter\EntryPoint.h" />
     <ClInclude Include="Source\Otter\Log.h" />
     <ClInclude Include="Source\Otter\Math\Vector2.h" />
+    <ClInclude Include="Source\Game\Systems\CombatSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\SandboxApp.cpp" />
@@ -38,6 +40,7 @@
     <ClCompile Include="Source\Otter\Core\EntityManager.cpp" />
     <ClCompile Include="Source\Otter\Core\SystemManager.cpp" />
     <ClCompile Include="Source\Otter\Log.cpp" />
+    <ClCompile Include="Source\Game\Systems\CombatSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

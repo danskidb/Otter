@@ -9,6 +9,8 @@ public:
 	~SandboxApp();
 
 	void RegisterComponents() override;
+	void RegisterSystems() override;
+
 	void OnStart() override;
 	void OnTick(float deltaTime) override;
 	void OnStop() override;

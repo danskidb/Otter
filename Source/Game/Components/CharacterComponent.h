@@ -10,9 +10,11 @@ namespace RpgGame {
 		std::string name;
 		Level level;
 		EArcana arcana;
+		std::vector<PersonaId> ownedPersona;	// Most have one persona but this should also work for the MC who can switch between personas.
 
-		std::vector<PersonaId> ownedPersona;
+		// Live data
 		std::vector<Otter::EntityId> instantiatedPersona;
+		int activatePersona = -1;	//todo: change from struct to class and add a function to add / activate personas with verification.
 
 		CharacterComponent() {}
 		CharacterComponent(std::string _name, Level _level, EArcana _arcana) : name(_name), level(_level), arcana(_arcana) {}
