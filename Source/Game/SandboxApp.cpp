@@ -6,64 +6,58 @@
 #include "Data/PersonaData.h"
 
 using namespace Otter;
-using namespace RpgGame;
 
-SandboxApp::SandboxApp()
-{
-}
+namespace RpgGame {
 
-SandboxApp::~SandboxApp()
-{
-}
-
-void SandboxApp::RegisterComponents()
-{
-	Application::RegisterComponents();
-	coordinator->RegisterComponent<PersonaComponent>();
-	coordinator->RegisterComponent<CharacterComponent>();
-	coordinator->RegisterComponent<CombatComponent>();
-}
-
-void SandboxApp::RegisterSystems()
-{
-	Application::RegisterSystems();
-	auto combatSystem = coordinator->RegisterSystem<CombatSystem>();
+	void SandboxApp::RegisterComponents()
 	{
-		Signature signature;
-		signature.set(coordinator->GetComponentType<CombatComponent>());
-		coordinator->SetSystemSignature<CombatSystem>(signature);
+		Application::RegisterComponents();
+		coordinator->RegisterComponent<PersonaComponent>();
+		coordinator->RegisterComponent<CharacterComponent>();
+		coordinator->RegisterComponent<CombatComponent>();
 	}
-}
 
-void SandboxApp::OnStart()
-{
-	OT_INFO("OnStart");
+	void SandboxApp::RegisterSystems()
+	{
+		Application::RegisterSystems();
+		auto combatSystem = coordinator->RegisterSystem<CombatSystem>();
+		{
+			Signature signature;
+			signature.set(coordinator->GetComponentType<CombatComponent>());
+			coordinator->SetSystemSignature<CombatSystem>(signature);
+		}
+	}
 
-	// create test character
-	EntityId characterEntityId = coordinator->CreateEntity();
-	coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
-	coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent());
+	void SandboxApp::OnStart()
+	{
+		OT_INFO("OnStart");
 
-	// create test persona which belongs to the player.
-	EntityId personaEntityId = coordinator->CreateEntity();
-	coordinator->AddComponent<PersonaComponent>(personaEntityId, PersonaComponent(1, "Arsène", 1, EArcana::Fool));
-	coordinator->GetComponent<CharacterComponent>(characterEntityId).instantiatedPersona.push_back(personaEntityId);
+		// create test character
+		EntityId characterEntityId = coordinator->CreateEntity();
+		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
+		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent());
 
-	// Create test opponent persona
-	EntityId opponentEntityId = coordinator->CreateEntity();
-	coordinator->AddComponent<PersonaComponent>(opponentEntityId, PersonaComponent(11, "Jack Frost", 1, EArcana::Magician));
-	coordinator->AddComponent<CombatComponent>(opponentEntityId, CombatComponent());
+		// create test persona which belongs to the player.
+		EntityId personaEntityId = coordinator->CreateEntity();
+		coordinator->AddComponent<PersonaComponent>(personaEntityId, PersonaComponent(1, "Arsène", 1, EArcana::Fool));
+		coordinator->GetComponent<CharacterComponent>(characterEntityId).instantiatedPersona.push_back(personaEntityId);
 
-	std::shared_ptr<CombatSystem> combatSystem = coordinator->GetSystem<CombatSystem>();
-	combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponentEntityId}, ECombatStartType::Normal);
+		// Create test opponent persona
+		EntityId opponentEntityId = coordinator->CreateEntity();
+		coordinator->AddComponent<PersonaComponent>(opponentEntityId, PersonaComponent(11, "Jack Frost", 1, EArcana::Magician));
+		coordinator->AddComponent<CombatComponent>(opponentEntityId, CombatComponent());
 
-	int bp = 0;
-}
+		std::shared_ptr<CombatSystem> combatSystem = coordinator->GetSystem<CombatSystem>();
+		combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponentEntityId}, ECombatStartType::Normal);
 
-void SandboxApp::OnTick(float deltaTime)
-{
-}
+		int bp = 0;
+	}
 
-void SandboxApp::OnStop()
-{
+	void SandboxApp::OnTick(float deltaTime)
+	{
+	}
+
+	void SandboxApp::OnStop()
+	{
+	}
 }

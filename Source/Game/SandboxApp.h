@@ -2,21 +2,20 @@
 
 #include <Otter.h>
 
-class SandboxApp : public Otter::Application
-{
-public:
-	SandboxApp();
-	~SandboxApp();
+namespace RpgGame {
+	class SandboxApp : public Otter::Application
+	{
+	public:
+		void RegisterComponents() override;
+		void RegisterSystems() override;
 
-	void RegisterComponents() override;
-	void RegisterSystems() override;
-
-	void OnStart() override;
-	void OnTick(float deltaTime) override;
-	void OnStop() override;
-};
+		void OnStart() override;
+		void OnTick(float deltaTime) override;
+		void OnStop() override;
+	};
+}
 
 Otter::Application* Otter::CreateApplication()
 {
-	return new SandboxApp();
+	return new RpgGame::SandboxApp();
 }
