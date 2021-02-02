@@ -10,7 +10,24 @@ namespace Otter {
 
 	class Coordinator
 	{
+		static Coordinator* instance;
+		Coordinator() {}
+
 	public:
+		static Coordinator* GetInstance() {
+			if (!instance)
+			{
+				instance = new Coordinator;
+				instance->Init();
+			}
+
+			return instance;
+		}
+
+		static void DestroyInstance() {
+			delete(instance);
+		}
+
 		void Init();
 		
 		EntityId CreateEntity();

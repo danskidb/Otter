@@ -3,6 +3,8 @@
 
 namespace Otter {
 
+	Coordinator* Coordinator::instance = 0;
+
 	Application::Application()
 	{
 	}
@@ -13,7 +15,7 @@ namespace Otter {
 
 	void Application::Run()
 	{
-		coordinator.Init();
+		coordinator = Coordinator::GetInstance();
 		RegisterComponents();
 		RegisterSystems();
 
@@ -30,11 +32,12 @@ namespace Otter {
 		}
 
 		OnStop();
+		coordinator->DestroyInstance();
 	}
 
 	void Application::RegisterComponents()
 	{
-		coordinator.RegisterComponent<Transform2DComponent>();
+		coordinator->RegisterComponent<Transform2DComponent>();
 	}
 
 	void Application::RegisterSystems()

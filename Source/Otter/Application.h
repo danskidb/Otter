@@ -7,7 +7,7 @@ namespace Otter {
 	class Application
 	{
 	public:
-		Coordinator coordinator;
+		Coordinator* coordinator;
 
 		Application();
 		virtual ~Application();
