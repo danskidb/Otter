@@ -48,6 +48,14 @@ namespace Otter {
 		}
 
 		template<typename T>
+		bool HasComponent(EntityId entityId)
+		{
+			Signature s;
+			s.set(componentManager->GetComponentType<T>(), true);
+			return (entityManager->GetSignature(entityId) & s) == s;
+		}
+
+		template<typename T>
 		T& GetComponent(EntityId entityId)
 		{
 			return componentManager->GetComponent<T>(entityId);
