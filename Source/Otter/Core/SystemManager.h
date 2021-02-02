@@ -10,12 +10,30 @@ namespace Otter {
 	class SystemManager
 	{
 	public:
-		template<typename T>
-		std::shared_ptr<T> RegisterSystem();
+		template<typename T> 
+		std::shared_ptr<T> RegisterSystem() 
+		{
+			const char* typeName = typeid(T).name();
+
+			OT_ASSERT(systems.find(typeName) == systems.end(), "Registering system more than once.");
+
+			// Create a pointer to the system and return it so it can be used externally
+			auto system = std::make_shared<T>();
+			systems.insert({ typeName, system });
+			return system;
+		}
 
 		// Register what component types a system requires on an entity
-		template<typename T>
-		void SetSignature(Signature signature);
+		template<typename T> 
+		void SetSignature(Signature signature)
+		{
+			const char* typeName = typeid(T).name();
+
+			OT_ASSERT(systems.find(typeName) != systems.end(), "System used before registered.");
+
+			// Set the signature for this system
+			signatures.insert({ typeName, signature });
+		}
 
 		void EntityDestroyed(EntityId entityId);
 
