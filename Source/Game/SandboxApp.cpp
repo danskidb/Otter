@@ -32,25 +32,33 @@ namespace RpgGame {
 	{
 		OT_INFO("OnStart");
 
-		// create test character
+		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
 		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent());
 
-		// create test persona which belongs to the player.
 		EntityId personaEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<PersonaComponent>(personaEntityId, PersonaComponent(1, "Arsène", 1, EArcana::Fool));
-		coordinator->GetComponent<CharacterComponent>(characterEntityId).instantiatedPersona.push_back(personaEntityId);
+		coordinator->GetComponent<CharacterComponent>(characterEntityId).AddPersona(personaEntityId);
 
 		// Create test opponent persona
-		EntityId opponentEntityId = coordinator->CreateEntity();
-		coordinator->AddComponent<PersonaComponent>(opponentEntityId, PersonaComponent(11, "Jack Frost", 1, EArcana::Magician));
-		coordinator->AddComponent<CombatComponent>(opponentEntityId, CombatComponent());
+		EntityId opponent1 = coordinator->CreateEntity();
+		coordinator->AddComponent<PersonaComponent>(opponent1, PersonaComponent(2, "Jack Frost", 11, EArcana::Magician));
+		coordinator->AddComponent<CombatComponent>(opponent1, CombatComponent());
 
+		EntityId opponent2 = coordinator->CreateEntity();
+		coordinator->AddComponent<PersonaComponent>(opponent2, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
+		coordinator->AddComponent<CombatComponent>(opponent2, CombatComponent());
+
+		EntityId opponent3 = coordinator->CreateEntity();
+		coordinator->AddComponent<PersonaComponent>(opponent3, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
+		coordinator->AddComponent<CombatComponent>(opponent3, CombatComponent());
+
+		// Run combat
 		std::shared_ptr<CombatSystem> combatSystem = coordinator->GetSystem<CombatSystem>();
-		combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponentEntityId}, ECombatStartType::Normal);
+		combatSystem->InitCombat(std::vector<EntityId>{characterEntityId}, std::vector<EntityId>{opponent1, opponent2, opponent3}, ECombatStartType::Normal);
 
-		int bp = 0;
+		int breakpoint = 0;
 	}
 
 	void SandboxApp::OnTick(float deltaTime)
