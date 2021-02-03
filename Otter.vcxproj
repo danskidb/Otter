@@ -31,6 +31,7 @@
     <ClInclude Include="Source\Otter\Log.h" />
     <ClInclude Include="Source\Otter\Math\Vector2.h" />
     <ClInclude Include="Source\Game\Systems\CombatSystem.h" />
+    <ClInclude Include="Source\Otter\Utils\Filesystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Components\CharacterComponent.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Source\Otter\Core\SystemManager.cpp" />
     <ClCompile Include="Source\Otter\Log.cpp" />
     <ClCompile Include="Source\Game\Systems\CombatSystem.cpp" />
+    <ClCompile Include="Source\Otter\Utils\Filesystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -96,6 +98,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;OT_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\nlohmann\json\include;$(SolutionDir)ThirdParty\spdlog\include;$(SolutionDir)Source\Game;$(SolutionDir)Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
