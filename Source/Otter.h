@@ -21,4 +21,6 @@
 	todo:
 	- json serializer
 	- combat system
+	- more logging on Otter/Core/
+	- event system
 */

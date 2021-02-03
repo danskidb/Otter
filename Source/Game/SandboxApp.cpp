@@ -35,7 +35,7 @@ namespace RpgGame {
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
-		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent());
+		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent(100, 50));
 
 		EntityId personaEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<PersonaComponent>(personaEntityId, PersonaComponent(1, "Arsène", 1, EArcana::Fool));
@@ -44,15 +44,15 @@ namespace RpgGame {
 		// Create test opponent persona
 		EntityId opponent1 = coordinator->CreateEntity();
 		coordinator->AddComponent<PersonaComponent>(opponent1, PersonaComponent(2, "Jack Frost", 11, EArcana::Magician));
-		coordinator->AddComponent<CombatComponent>(opponent1, CombatComponent());
+		coordinator->AddComponent<CombatComponent>(opponent1, CombatComponent(100, 100));
 
 		EntityId opponent2 = coordinator->CreateEntity();
 		coordinator->AddComponent<PersonaComponent>(opponent2, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
-		coordinator->AddComponent<CombatComponent>(opponent2, CombatComponent());
+		coordinator->AddComponent<CombatComponent>(opponent2, CombatComponent(10, 20));
 
 		EntityId opponent3 = coordinator->CreateEntity();
 		coordinator->AddComponent<PersonaComponent>(opponent3, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
-		coordinator->AddComponent<CombatComponent>(opponent3, CombatComponent());
+		coordinator->AddComponent<CombatComponent>(opponent3, CombatComponent(10, 20));
 
 		// Run combat
 		std::shared_ptr<CombatSystem> combatSystem = coordinator->GetSystem<CombatSystem>();

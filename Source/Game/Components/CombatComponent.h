@@ -3,10 +3,14 @@
 namespace RpgGame {
 
 	struct CombatComponent {
-		unsigned int hp;
-		unsigned int sp;
+		int hp = 0;
+		int sp = 0;
 
 		CombatComponent() {}
 		CombatComponent(unsigned int _hp, unsigned int _sp) : hp(_hp), sp(_sp) {}
+
+		bool IsAlive() {
+			return hp > 0;
+		}
 	};
 }

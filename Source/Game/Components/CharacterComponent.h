@@ -4,10 +4,10 @@
 #include "Data/PersonaData.h"
 #include "Otter/Core/Types.h"
 
+using namespace Otter;
+
 namespace RpgGame {
 	
-	using namespace Otter;
-
 	class CharacterComponent {
 	public:
 		std::string name;
