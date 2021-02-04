@@ -4,6 +4,8 @@
 #include "Components/CombatComponent.h"
 #include "Systems/CombatSystem.h"
 #include "Data/PersonaData.h"
+#include "Otter/Utils/Filesystem.h"
+#include "Data/Compendium.h"
 
 using namespace Otter;
 
@@ -31,6 +33,10 @@ namespace RpgGame {
 	void SandboxApp::OnStart()
 	{
 		OT_INFO("OnStart");
+
+		// Load compendium from JSON
+		Compendium c;
+		c.Initialize();
 
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();

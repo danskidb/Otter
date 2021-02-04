@@ -78,6 +78,9 @@
     <ClInclude Include="Source\Otter\Utils\Filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Data\Compendium.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\SandboxApp.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Otter\Utils\Filesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Data\Compendium.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

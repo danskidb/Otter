@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Data\Compendium.h" />
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
     <ClInclude Include="Source\Game\Components\CombatComponent.h" />
     <ClInclude Include="Source\Game\Components\PersonaComponent.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Source\Otter\Utils\Filesystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Data\Compendium.cpp" />
     <ClCompile Include="Source\Game\Components\CharacterComponent.cpp" />
     <ClCompile Include="Source\Game\SandboxApp.cpp" />
     <ClCompile Include="Source\Otter\Application.cpp" />

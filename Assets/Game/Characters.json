@@ -1,0 +1,47 @@
+[
+    {
+        "Name": "Ren Amamiyama",
+        "Codename": "Joker",
+        "Arcana": "Fool",
+        "StartData": {
+            "Persona": "Arsene",
+            "Level": 1
+        }
+    },
+    {
+        "Name": "Morgana",
+        "Codename": "Mona",
+        "Arcana": "Magician",
+        "StartData": {
+            "Persona": "Zorro",
+            "Level": 1
+        }
+    },
+    {
+        "Name": "Ryuji Sakamoto",
+        "Codename": "Skull",
+        "Arcana": "Chariot",
+        "StartData": {
+            "Persona": "Captain Kidd",
+            "Level": 1
+        }
+    },
+    {
+        "Name": "Ann Takamaki",
+        "Codename": "Panther",
+        "Arcana": "Lovers",
+        "StartData": {
+            "Persona": "Carmen",
+            "Level": 1
+        }
+    },
+    {
+        "Name": "Makoto Niijima",
+        "Codename": "Queen",
+        "Arcana": "Priestess",
+        "StartData": {
+            "Persona": "Johanna",
+            "Level": 1
+        }
+    }
+]

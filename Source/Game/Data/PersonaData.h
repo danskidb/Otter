@@ -1,35 +1,33 @@
 #pragma once
+#include <map>
+#include <nlohmann/json.hpp>
 
 namespace RpgGame {
 
-	using PersonaId = std::uint16_t;
+	using PersonaId = std::uint16_t; // todo: remove this
 	using Level = std::uint8_t;
 
-	enum class EElement {
+	enum class EElement : unsigned int {
 		Physical,
 		Gun,
 		Fire,
 		Ice,
 		Electric,
 		Wind,
-		Psy,
+		Psychic,
 		Nuclear,
 		Bless,
 		Curse,
-		Almighty,
-		Ailment,
-		Support,
-		Passive,
-		Healing,
+		MAX_ITEMS,
 	};
 
-	enum class EElementAffinity {
+	enum class EElementAffinity : char {
 		Normal,
-		Reflect,
+		Repel,
 		Absorb,
-		Block,
 		Resist,
-		Weak
+		Weak,
+		Nullify
 	};
 
 	enum class EAilment {
@@ -103,6 +101,21 @@ namespace RpgGame {
 		std::string name;
 		ECombatSkillCostType costType;
 		EElement element;
+	};
+
+	struct Persona {
+		std::string name;
+		Level level;
+		EArcana arcana;
+
+		CombatStat stats;
+		std::vector<CombatSkill> skills;
+		std::map<EElement, EElementAffinity> elements;
+
+		std::string item;
+		std::string trait;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, item, trait)
 	};
 
 }
