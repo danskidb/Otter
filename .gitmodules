@@ -4,3 +4,6 @@
 [submodule "ThirdParty/nlohmann/json"]
 	path = ThirdParty/nlohmann/json
 	url = https://github.com/nlohmann/json.git
+[submodule "ThirdParty/magic_enum"]
+	path = ThirdParty/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
