@@ -15,16 +15,25 @@ namespace RpgGame {
 	void Compendium::Initialize()
 	{
 		personaCompendium.clear();
+		skillCompendium.clear();
 
+		ParsePersonaDatabase();
+		ParseSkillDatabase();
+	}
+
+	void Compendium::ParsePersonaDatabase()
+	{
 		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
-		absolutePath /= jsonPath;
+		absolutePath /= personaJsonPath;
 		fs::canonical(absolutePath);
 		std::string fullJsonData = Filesystem::ReadFile(absolutePath);	//todo: see if we can directly get this into a json obj from the file buffer
 
+		// Import persona database
 		json j = json::parse(fullJsonData);
 		fullJsonData.clear();
-
-		for (auto& itr : j.items()) {
+		
+		for (auto& itr : j.items()) 
+		{
 			json personaEntry = itr.value();
 			Persona persona = personaEntry.get<Persona>();
 			persona.name = itr.key();
@@ -55,7 +64,58 @@ namespace RpgGame {
 				persona.elementAffinities.insert({ elemsImportOrder[i], element.value() });
 			}
 
+			if (personaEntry.contains("skills"))
+			{
+				json skillTable = personaEntry["skills"];
+				for (auto& skillUnlocks : skillTable.items())
+				{
+					persona.skillUnlocks.insert({ skillUnlocks.key(), skillUnlocks.value() });
+				}
+			}
+
 			personaCompendium.insert({ itr.key(), persona });
+		}
+	}
+
+	void Compendium::ParseSkillDatabase()
+	{
+		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
+		absolutePath /= skillsJsonPath;
+		fs::canonical(absolutePath);
+		std::string fullJsonData = Filesystem::ReadFile(absolutePath);
+
+		// Import skill database
+		json j = json::parse(fullJsonData);
+		fullJsonData.clear();
+
+		for (auto& itr : j.items()) 
+		{
+			json skillEntry = itr.value();
+			CombatSkill combatSkill = skillEntry.get<CombatSkill>();
+			combatSkill.name = itr.key();
+
+			if (skillEntry.contains("cost"))
+				combatSkill.cost = skillEntry["cost"].get<int>();
+
+			// element
+			std::string elementString = skillEntry["element"].get<std::string>();
+			auto element = magic_enum::enum_cast<EElement>(elementString);
+			OT_ASSERT(element.has_value(), "Element " + elementString + " is not defined - found on skillId " + combatSkill.name);
+			combatSkill.element = element.value();
+
+			// cost type
+			if (combatSkill.element != EElement::Passive && combatSkill.element != EElement::Trait)
+			{
+				combatSkill.costType = combatSkill.cost < 100 ? ECombatSkillCostType::Percentage_HP : ECombatSkillCostType::Fixed_SP;
+				if (combatSkill.costType == ECombatSkillCostType::Fixed_SP)
+					combatSkill.cost /= 100;
+			}
+			else
+			{
+				combatSkill.costType = ECombatSkillCostType::None;
+			}
+
+			skillCompendium.insert({ itr.key(), combatSkill });
 		}
 	}
 
@@ -78,6 +138,31 @@ namespace RpgGame {
 		for (auto iter = personaCompendium.begin(); iter != personaCompendium.end(); ++iter)
 		{
 			if (iter->second.arcana == arcana)
+				result.push_back(iter->second);
+		}
+
+		return result;
+	}
+
+	bool Compendium::FindSkillById(std::string skillId, CombatSkill &outSkill)
+	{
+		if (skillCompendium.size() <= 0)
+			return false;
+
+		if (skillCompendium.count(skillId) <= 0)
+			return false;
+
+		outSkill = skillCompendium[skillId];
+		return true;
+	}
+
+	std::vector<CombatSkill> Compendium::FindSkillByElement(EElement element)
+	{
+		std::vector<CombatSkill> result;
+
+		for (auto iter = skillCompendium.begin(); iter != skillCompendium.end(); ++iter)
+		{
+			if (iter->second.element == element)
 				result.push_back(iter->second);
 		}
 

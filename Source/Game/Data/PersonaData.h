@@ -7,7 +7,7 @@ namespace RpgGame {
 	using PersonaId = std::uint16_t; // todo: remove this
 	using Level = std::uint8_t;
 
-	enum class EElement : unsigned int {
+	enum class EElement{
 		Physical,
 		Gun,
 		Fire,
@@ -23,9 +23,10 @@ namespace RpgGame {
 		Support,
 		Passive,
 		Healing,
+		Trait
 	};
 
-	enum class EElementAffinity : char {
+	enum class EElementAffinity {
 		Normal,
 		Repel,
 		Absorb,
@@ -83,8 +84,8 @@ namespace RpgGame {
 	};
 
 	enum class ECombatSkillCostType {
+		None,
 		Fixed_SP,
-		Fixed_HP,
 		Percentage_HP,
 	};
 
@@ -103,11 +104,14 @@ namespace RpgGame {
 	};
 
 	struct CombatSkill {
-		int level = 0;
-		int cost = 0;
 		std::string name;
-		ECombatSkillCostType costType;
 		EElement element;
+		std::string effect;
+
+		ECombatSkillCostType costType = ECombatSkillCostType::None;
+		int cost = 0;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CombatSkill, effect);
 	};
 
 	struct Persona {
@@ -117,7 +121,7 @@ namespace RpgGame {
 		EArcana inherits;
 
 		CombatStat stats;
-		std::vector<CombatSkill> skills;
+		std::map<std::string, int> skillUnlocks;
 		std::map<EElement, EElementAffinity> elementAffinities;
 
 		std::string item;
@@ -128,5 +132,4 @@ namespace RpgGame {
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, trait)
 	};
-
 }

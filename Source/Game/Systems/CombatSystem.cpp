@@ -20,7 +20,7 @@ namespace RpgGame {
 		combatOngoing = true;
 
 		// Verify characters
-		OT_ASSERT(_characters.size() <= maxCharacters, "Attempted to start combat with ", _characters.size(), " characters, but the max supported is ", maxCharacters);
+		OT_ASSERT(_characters.size() <= maxCharacters, "Attempted to start combat with " + std::to_string(_characters.size()) + " characters, but the max supported is " + std::to_string(maxCharacters));
 		for (EntityId character : _characters)
 		{
 			OT_ASSERT(coordinator->HasComponent<CharacterComponent>(character), "Character does not have a CharacterComponent!");
@@ -28,7 +28,7 @@ namespace RpgGame {
 		characters = _characters;
 
 		// Verify opponents
-		OT_ASSERT(_opponents.size() <= maxOpponents, "Attempted to start combat with ", _opponents.size(), " opponents, but the max supported is ", maxOpponents);
+		OT_ASSERT(_opponents.size() <= maxOpponents, "Attempted to start combat with " + std::to_string(_opponents.size()) + " opponents, but the max supported is " + std::to_string(maxOpponents));
 		for (EntityId opponent : _opponents)
 		{
 			OT_ASSERT(coordinator->HasComponent<PersonaComponent>(opponent), "Opponent does not have a PersonaComponent!");
