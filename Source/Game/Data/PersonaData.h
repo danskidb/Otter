@@ -18,7 +18,11 @@ namespace RpgGame {
 		Nuclear,
 		Bless,
 		Curse,
-		MAX_ITEMS,
+		Almighty,
+		Ailment,
+		Support,
+		Passive,
+		Healing,
 	};
 
 	enum class EElementAffinity : char {
@@ -64,7 +68,7 @@ namespace RpgGame {
 		Hermit,
 		Fortune,
 		Strength,
-		HangedMan,
+		Hanged,
 		Death,
 		Temperance,
 		Devil,
@@ -73,6 +77,9 @@ namespace RpgGame {
 		Moon,
 		Sun,
 		Judgement,
+		Councillor,
+		Faith,
+		World
 	};
 
 	enum class ECombatSkillCostType {
@@ -88,16 +95,16 @@ namespace RpgGame {
 	};
 
 	struct CombatStat {
-		int strength;
-		int magic;
-		int endurance;
-		int agility;
-		int luck;
+		int strength = 0;
+		int magic = 0;
+		int endurance = 0;
+		int agility = 0;
+		int luck = 0;
 	};
 
 	struct CombatSkill {
-		int level;
-		int cost;
+		int level = 0;
+		int cost = 0;
 		std::string name;
 		ECombatSkillCostType costType;
 		EElement element;
@@ -107,15 +114,19 @@ namespace RpgGame {
 		std::string name;
 		Level level;
 		EArcana arcana;
+		EArcana inherits;
 
 		CombatStat stats;
 		std::vector<CombatSkill> skills;
-		std::map<EElement, EElementAffinity> elements;
+		std::map<EElement, EElementAffinity> elementAffinities;
 
 		std::string item;
 		std::string trait;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, item, trait)
+		bool rare = false;
+		bool special = false;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, trait)
 	};
 
 }

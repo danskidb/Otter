@@ -38,6 +38,10 @@ namespace RpgGame {
 		Compendium c;
 		c.Initialize();
 
+		Persona p;
+		bool result = c.FindPersonaById("Arsene", p);
+		std::vector<Persona> byArcana = c.FindPersonaByArcana(EArcana::Councillor);
+
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));

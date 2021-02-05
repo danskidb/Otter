@@ -5,6 +5,7 @@
 #include <iostream>
 #include <array>
 #include <limits>
+#include "Otter/Log.h"
 
 using json = nlohmann::json;
 using namespace Otter;
@@ -23,36 +24,38 @@ namespace RpgGame {
 		json j = json::parse(fullJsonData);
 		fullJsonData.clear();
 
-		for (auto& personaEntry : j.items()) {
-			Persona persona = personaEntry.value().get<Persona>();
-			persona.name = personaEntry.key();
+		for (auto& itr : j.items()) {
+			json personaEntry = itr.value();
+			Persona persona = personaEntry.get<Persona>();
+			persona.name = itr.key();
+			persona.item = personaEntry["itemr"].get<std::string>();
 
-			auto arcana = magic_enum::enum_cast<EArcana>(personaEntry.value()["arcana"].get<std::string>());
-			if (arcana.has_value())
-				persona.arcana = arcana.value();
+			if (personaEntry.contains("rare"))
+				persona.rare = personaEntry["rare"].get<bool>();
 
-			std::vector<int> statsObj = personaEntry.value()["stats"].get<std::vector<int>>();
+			if (personaEntry.contains("special"))
+				persona.rare = personaEntry["special"].get<bool>();
+
+			// Arcana
+			std::string arcanaString = personaEntry["arcana"].get<std::string>();
+			auto arcana = magic_enum::enum_cast<EArcana>(arcanaString);
+			OT_ASSERT(arcana.has_value(), "Arcana " + arcanaString + " is not defined - found on personaId " + persona.name);
+			persona.arcana = arcana.value();
+
+			// Stats
+			std::vector<int> statsObj = personaEntry["stats"].get<std::vector<int>>();
 			persona.stats = CombatStat { statsObj[0], statsObj[1], statsObj[2], statsObj[3], statsObj[4] };	//todo: can this be cleaner?
 
-			//todo: use magic enum
-			std::vector<std::string> elemsObj = personaEntry.value()["elems"].get<std::vector<std::string>>();
-			for (int i = 0; i < (int)EElement::MAX_ITEMS; i++)
+			// Element Affinities
+			std::vector<std::string> elemsObj = personaEntry["elems"].get<std::vector<std::string>>();
+			for (int i = 0; i < elemsImportOrder.size(); i++)
 			{
-				if (elemsObj[i] == "-")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Normal });
-				else if (elemsObj[i] == "rs")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Resist });
-				else if (elemsObj[i] == "wk")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Weak });
-				else if (elemsObj[i] == "ab")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Absorb });
-				else if (elemsObj[i] == "rp")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Repel });
-				else if (elemsObj[i] == "nu")
-					persona.elements.insert({ (EElement)i, EElementAffinity::Nullify });
+				auto element = magic_enum::enum_cast<EElementAffinity>(elemsObj[i]);
+				OT_ASSERT(element.has_value(), "EElementAffinity " + elemsObj[i] + " is not defined - found on personaId " + persona.name + " for element entry" + std::to_string(i));
+				persona.elementAffinities.insert({ elemsImportOrder[i], element.value() });
 			}
 
-			personaCompendium.insert({ personaEntry.key(), persona });
+			personaCompendium.insert({ itr.key(), persona });
 		}
 	}
 
@@ -61,9 +64,23 @@ namespace RpgGame {
 		if (personaCompendium.size() <= 0)
 			return false;
 
-		//todo.
+		if (personaCompendium.count(personaId) <= 0)
+			return false;
 
-		return false;
+		outPersona = personaCompendium[personaId];
+		return true;
 	}
 
+	std::vector<Persona> Compendium::FindPersonaByArcana(EArcana arcana)
+	{
+		std::vector<Persona> result;
+
+		for (auto iter = personaCompendium.begin(); iter != personaCompendium.end(); ++iter)
+		{
+			if (iter->second.arcana == arcana)
+				result.push_back(iter->second);
+		}
+
+		return result;
+	}
 }
