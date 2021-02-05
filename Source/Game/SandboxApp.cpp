@@ -38,30 +38,32 @@ namespace RpgGame {
 		Compendium c;
 		c.Initialize();
 
-		Persona p;
-		bool result = c.FindPersonaById("Arsene", p);
-		std::vector<Persona> byArcana = c.FindPersonaByArcana(EArcana::Councillor);
-
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
 		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
 		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent(100, 50));
 
 		EntityId personaEntityId = coordinator->CreateEntity();
-		coordinator->AddComponent<PersonaComponent>(personaEntityId, PersonaComponent(1, "Arsène", 1, EArcana::Fool));
+		PersonaComponent mcPersona;
+		bool result1 = c.FindPersonaById("Arsene", mcPersona);
+		coordinator->AddComponent<PersonaComponent>(personaEntityId, mcPersona);
 		coordinator->GetComponent<CharacterComponent>(characterEntityId).AddPersona(personaEntityId);
 
 		// Create test opponent persona
 		EntityId opponent1 = coordinator->CreateEntity();
-		coordinator->AddComponent<PersonaComponent>(opponent1, PersonaComponent(2, "Jack Frost", 11, EArcana::Magician));
+		PersonaComponent opponent1Persona;
+		bool result2 = c.FindPersonaById("Jack Frost", opponent1Persona);
+		coordinator->AddComponent<PersonaComponent>(opponent1, opponent1Persona);
 		coordinator->AddComponent<CombatComponent>(opponent1, CombatComponent(100, 100));
 
 		EntityId opponent2 = coordinator->CreateEntity();
-		coordinator->AddComponent<PersonaComponent>(opponent2, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
+		PersonaComponent opponent2Persona;
+		bool result3 = c.FindPersonaById("Pixie", opponent2Persona);
+		coordinator->AddComponent<PersonaComponent>(opponent2, opponent2Persona);
 		coordinator->AddComponent<CombatComponent>(opponent2, CombatComponent(10, 20));
 
 		EntityId opponent3 = coordinator->CreateEntity();
-		coordinator->AddComponent<PersonaComponent>(opponent3, PersonaComponent(3, "Pixie", 2, EArcana::Lovers));
+		coordinator->AddComponent<PersonaComponent>(opponent3, opponent2Persona);
 		coordinator->AddComponent<CombatComponent>(opponent3, CombatComponent(10, 20));
 
 		// Run combat

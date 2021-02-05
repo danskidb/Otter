@@ -11,7 +11,8 @@ namespace RpgGame {
 	/*
 		Todo:
 		- Add actions players can take
-		- critical hits + One More system
+		- HP / sp of players
+		- attack damage calculation
 	*/
 
 	class CombatSystem : public System {
