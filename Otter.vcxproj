@@ -36,7 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Data\Compendium.cpp" />
-    <ClCompile Include="Source\Game\Components\CharacterComponent.cpp" />
     <ClCompile Include="Source\Game\SandboxApp.cpp" />
     <ClCompile Include="Source\Otter\Application.cpp" />
     <ClCompile Include="Source\Otter\Core\ComponentManager.cpp" />

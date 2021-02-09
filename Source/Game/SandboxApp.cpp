@@ -40,14 +40,11 @@ namespace RpgGame {
 
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
-		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
-		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent(100, 50));
-
-		EntityId personaEntityId = coordinator->CreateEntity();
 		PersonaComponent mcPersona;
 		bool result1 = c.FindPersonaById("Arsene", mcPersona);
-		coordinator->AddComponent<PersonaComponent>(personaEntityId, mcPersona);
-		coordinator->GetComponent<CharacterComponent>(characterEntityId).AddPersona(personaEntityId);
+		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
+		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent(100, 50));
+		coordinator->AddComponent<PersonaComponent>(characterEntityId, mcPersona);
 
 		// Create test opponent persona
 		EntityId opponent1 = coordinator->CreateEntity();

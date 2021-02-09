@@ -107,9 +107,6 @@
     <ClCompile Include="Source\Game\Systems\CombatSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Components\CharacterComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Otter\Utils\Filesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

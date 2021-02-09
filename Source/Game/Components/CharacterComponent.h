@@ -8,22 +8,13 @@ using namespace Otter;
 
 namespace RpgGame {
 	
-	class CharacterComponent {
-	public:
+	struct CharacterComponent {
 		std::string name;
 		Level level;
 		EArcana arcana;
-		std::vector<PersonaId> ownedPersona;	// Most have one persona but this should also work for the MC who can switch between personas.
-
-		// Live data
-		std::vector<EntityId> instantiatedPersona;
-		int activePersona = -1;
+		std::vector<std::string> ownedPersona;	// Most have one persona but this should also work for the MC who can switch between personas.
 
 		CharacterComponent() {}
 		CharacterComponent(std::string _name, Level _level, EArcana _arcana) : name(_name), level(_level), arcana(_arcana) {}
-
-		void AddPersona(EntityId personaEntityId);
-		void ActivatePersona(unsigned int toActivate);
-		EntityId GetActivePersona();
 	};
 }

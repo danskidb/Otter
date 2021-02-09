@@ -4,7 +4,6 @@
 
 namespace RpgGame {
 
-	using PersonaId = std::uint16_t; // todo: remove this
 	using Level = std::uint8_t;
 
 	enum class EElement{

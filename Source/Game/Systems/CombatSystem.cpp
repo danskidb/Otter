@@ -186,23 +186,19 @@ namespace RpgGame {
 			else
 				toPrint += "- ";
 
+			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
+			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(entityId);
 			if (coordinator->HasComponent<CharacterComponent>(entityId))
 			{
 				CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
-				CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
-				toPrint += "Lv. " + std::to_string(character.level) + " " + character.name;
 
-				EntityId activePersonaEntityId = character.GetActivePersona();
-				PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(activePersonaEntityId);
+				toPrint += "Lv. " + std::to_string(character.level) + " " + character.name;
 				toPrint += " (Lv. " + std::to_string(persona.level) + " " + persona.name + ")";
 				toPrint += " - " + std::to_string(combatComponent.hp) + "HP / " + std::to_string(combatComponent.sp) + "SP";
 			}
 			else if (coordinator->HasComponent<PersonaComponent>(entityId))
 			{
-				PersonaComponent& opponent = coordinator->GetComponent<PersonaComponent>(entityId);
-				CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
-
-				toPrint += "Lv. " + std::to_string(opponent.level) + " " + opponent.name;
+				toPrint += "Lv. " + std::to_string(persona.level) + " " + persona.name;
 				toPrint += " - " + std::to_string(combatComponent.hp) + "HP / " + std::to_string(combatComponent.sp) + "SP";
 			}
 
