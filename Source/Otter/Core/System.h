@@ -9,5 +9,6 @@ namespace Otter {
 	{
 	public: 
 		std::set<EntityId> entities;
+		virtual void OnRegistered() = 0;
 	};
 }

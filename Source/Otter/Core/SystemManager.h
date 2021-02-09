@@ -20,6 +20,7 @@ namespace Otter {
 			// Create a pointer to the system and return it so it can be used externally
 			auto system = std::make_shared<T>();
 			systems.insert({ typeName, system });
+			system->OnRegistered();
 			return system;
 		}
 
