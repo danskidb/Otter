@@ -1,15 +1,18 @@
 ﻿#pragma once
 #include <string>
 #include <vector>
-#include "PersonaData.h"
+#include "Data/PersonaData.h"
 #include <array>
+#include "Otter/Core/System.h"
+
+using namespace Otter;
 
 namespace RpgGame {
 
-	class Compendium
+	class Compendium : public System
 	{
 	public:
-		void Initialize();
+		virtual void OnRegistered() override;
 
 		void ParsePersonaDatabase();
 		void ParseSkillDatabase();
@@ -19,7 +22,7 @@ namespace RpgGame {
 
 		bool FindSkillById(std::string skillId, CombatSkill &outSkill);
 		std::vector<CombatSkill> FindSkillByElement(EElement element);
-		
+
 	private:
 		const std::string personaJsonPath = "\PersonaData.json";
 		const std::string skillsJsonPath = "\Skills.json";

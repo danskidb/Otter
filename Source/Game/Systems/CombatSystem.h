@@ -17,6 +17,8 @@ namespace RpgGame {
 
 	class CombatSystem : public System {
 	public:
+		virtual void OnRegistered() override {}
+
 		// Starts new combat if not yet started. Verifies inputs, generates turn order and prints it.
 		void InitCombat(std::vector<EntityId> _characters, std::vector<EntityId> _opponents, ECombatStartType _combatStartType);
 

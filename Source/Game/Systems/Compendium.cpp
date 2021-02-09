@@ -12,7 +12,7 @@ using namespace Otter;
 
 namespace RpgGame {
 
-	void Compendium::Initialize()
+	void Compendium::OnRegistered()
 	{
 		personaCompendium.clear();
 		skillCompendium.clear();

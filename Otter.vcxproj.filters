@@ -78,7 +78,7 @@
     <ClInclude Include="Source\Otter\Utils\Filesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\Compendium.h">
+    <ClInclude Include="Source\Game\Systems\Compendium.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,7 +110,7 @@
     <ClCompile Include="Source\Otter\Utils\Filesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Data\Compendium.cpp">
+    <ClCompile Include="Source\Game\Systems\Compendium.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
