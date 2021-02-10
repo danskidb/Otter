@@ -46,6 +46,7 @@ namespace Otter {
 
 		// Read the whole file into the buffer.
 		f.read(result.data(), sz);
+		f.close();
 
 		return result;
 	}
