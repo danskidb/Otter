@@ -33,7 +33,7 @@ namespace Otter {
 		fs::path fp = filePath;
 		fp.make_preferred();
 		OT_ASSERT(fs::exists(fp), "Path " + fp.string() + " does not exist!");
-		OT_INFO("Attempting to read " + fp.string());
+		OT_CORE_INFO("Attempting to read " + fp.string());
 
 		// Open the stream to 'lock' the file.
 		std::ifstream f(filePath, std::ios::in | std::ios::binary);
