@@ -82,6 +82,13 @@ namespace RpgGame {
 		World
 	};
 
+	enum class EEquipmentSlot {
+		MeleeWeapon,
+		RangeWeapon,
+		Armor,
+		Accessory
+	};
+
 	enum class ECombatSkillCostType {
 		None,
 		Fixed_SP,
@@ -115,7 +122,7 @@ namespace RpgGame {
 
 	struct Persona {
 		std::string name;
-		Level level;
+		Level level = 0;
 		EArcana arcana;
 		EArcana inherits;
 
@@ -130,5 +137,37 @@ namespace RpgGame {
 		bool special = false;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, trait)
+	};
+
+	struct Item {
+		std::string name;
+		std::string description;
+
+		unsigned int price = 0;
+	};
+
+	struct Equipment : Item {
+		EEquipmentSlot slot;
+
+		unsigned int defense = 0;
+		unsigned int evasion = 0;
+
+		unsigned int accuracy = 0;
+		unsigned int attack = 0;
+		unsigned int rounds = 0;
+		//effect - maybe some sort of scripting would be useful here?
+		//for now we just go on like this to get basic combat in
+	};
+
+	struct Character {
+		std::string name;
+		std::string codename;
+		std::string personaId;
+		EArcana arcana;
+		Level level;
+
+		std::map<EEquipmentSlot, Equipment> allEquipment;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Character, name, level);
 	};
 }

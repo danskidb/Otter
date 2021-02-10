@@ -1,47 +1,62 @@
-[
-    {
-        "Name": "Ren Amamiyama",
-        "Codename": "Joker",
-        "Arcana": "Fool",
-        "StartData": {
-            "Persona": "Arsene",
-            "Level": 1
+{
+    "Joker": {
+        "name": "Ren Amamiyama",
+        "arcana": "Fool",
+        "persona": "Arsene",
+        "level": 1,
+        "defaultEquipment": {
+            "MeleeWeapon": "Rebel Knife",
+            "RangeWeapon": "Tkachev",
+            "Armor": "Dark Undershirt",
+            "Accessory": "Hip Glasses"
         }
     },
-    {
-        "Name": "Morgana",
-        "Codename": "Mona",
-        "Arcana": "Magician",
-        "StartData": {
-            "Persona": "Zorro",
-            "Level": 1
+    "Mona": {
+        "name": "Morgana",
+        "arcana": "Magician",
+        "persona": "Zorro",
+        "level": 1,
+        "defaultEquipment": {
+            "MeleeWeapon": "",
+            "RangeWeapon": "",
+            "Armor": "",
+            "Accessory": ""
         }
     },
-    {
-        "Name": "Ryuji Sakamoto",
-        "Codename": "Skull",
-        "Arcana": "Chariot",
-        "StartData": {
-            "Persona": "Captain Kidd",
-            "Level": 1
+    "Skull": {
+        "name": "Ryuji Sakamoto",
+        "arcana": "Chariot",
+        "persona": "Captain Kidd",
+        "level": 1,
+        "defaultEquipment": {
+            "MeleeWeapon": "",
+            "RangeWeapon": "",
+            "Armor": "",
+            "Accessory": ""
         }
     },
-    {
-        "Name": "Ann Takamaki",
-        "Codename": "Panther",
-        "Arcana": "Lovers",
-        "StartData": {
-            "Persona": "Carmen",
-            "Level": 1
+    "Panther": {
+        "name": "Ann Takamaki",
+        "arcana": "Lovers",
+        "persona": "Carmen",
+        "level": 1,
+        "defaultEquipment": {
+            "MeleeWeapon": "",
+            "RangeWeapon": "",
+            "Armor": "",
+            "Accessory": ""
         }
     },
-    {
-        "Name": "Makoto Niijima",
-        "Codename": "Queen",
-        "Arcana": "Priestess",
-        "StartData": {
-            "Persona": "Johanna",
-            "Level": 1
+    "Queen": {
+        "name": "Makoto Niijima",
+        "arcana": "Priestess",
+        "persona": "Johanna",
+        "level": 1,
+        "defaultEquipment": {
+            "MeleeWeapon": "",
+            "RangeWeapon": "",
+            "Armor": "",
+            "Accessory": ""
         }
     }
-]
+}

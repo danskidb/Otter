@@ -40,9 +40,12 @@ namespace RpgGame {
 
 		// create test character with owning persona.
 		EntityId characterEntityId = coordinator->CreateEntity();
+		CharacterComponent mcCharacter;
+		bool result0 = compendium->FindCharacterById("Joker", mcCharacter);
+
 		PersonaComponent mcPersona;
-		bool result1 = compendium->FindPersonaById("Arsene", mcPersona);
-		coordinator->AddComponent<CharacterComponent>(characterEntityId, CharacterComponent("Joker", 1, EArcana::Fool));
+		bool result1 = compendium->FindPersonaById(mcCharacter.personaId, mcPersona);	//todo: read from save file. Persona will have leveled up.
+		coordinator->AddComponent<CharacterComponent>(characterEntityId, mcCharacter);
 		coordinator->AddComponent<CombatComponent>(characterEntityId, CombatComponent(100, 50));
 		coordinator->AddComponent<PersonaComponent>(characterEntityId, mcPersona);
 

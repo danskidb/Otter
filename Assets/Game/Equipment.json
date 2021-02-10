@@ -1,0 +1,31 @@
+{
+    "MeleeWeapon": 
+    {
+        "Rebel Knife": {
+            "attack": 38,
+            "accuracy": 96
+        }
+    },
+    "RangeWeapon": 
+    {
+        "Tkachev": {
+            "attack": 50,
+            "accuracy": 92,
+            "rounds": 8
+        }
+    },
+    "Armor": 
+    {
+        "Dark Undershirt": {
+            "defense": 22,
+            "evasion": 6,
+            "fits": "Male"
+        }
+    },
+    "Accessory": 
+    {
+        "Hip Glasses": {
+            "description": "Black-framed glasses that makes one look smart."
+        }
+    }
+}

@@ -192,7 +192,7 @@ namespace RpgGame {
 			{
 				CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
 
-				toPrint += "Lv. " + std::to_string(character.level) + " " + character.name;
+				toPrint += "Lv. " + std::to_string(character.level) + " " + character.codename;
 				toPrint += " (Lv. " + std::to_string(persona.level) + " " + persona.name + ")";
 				toPrint += " - " + std::to_string(combatComponent.hp) + "HP / " + std::to_string(combatComponent.sp) + "SP";
 			}
@@ -220,7 +220,7 @@ namespace RpgGame {
 		if (IsCharacter(entityId))
 		{
 			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
-			return character.name;
+			return character.codename;
 		}
 		else
 		{
