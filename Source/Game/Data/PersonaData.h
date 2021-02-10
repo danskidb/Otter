@@ -139,14 +139,16 @@ namespace RpgGame {
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(Persona, level, trait)
 	};
 
-	struct Item {
+	class Item {
+	public:
 		std::string name;
 		std::string description;
 
 		unsigned int price = 0;
 	};
 
-	struct Equipment : Item {
+	class Equipment : public Item {
+	public:
 		EEquipmentSlot slot;
 
 		unsigned int defense = 0;
@@ -155,8 +157,11 @@ namespace RpgGame {
 		unsigned int accuracy = 0;
 		unsigned int attack = 0;
 		unsigned int rounds = 0;
+		unsigned int maxRounds = 0;
 		//effect - maybe some sort of scripting would be useful here?
 		//for now we just go on like this to get basic combat in
+
+		void RefillAmmo() { rounds = maxRounds; }
 	};
 
 	struct Character {

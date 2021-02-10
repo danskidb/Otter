@@ -157,7 +157,7 @@ namespace RpgGame {
 				if (equipmentEntry.contains("attack"))
 					equipment.attack = equipmentEntry["attack"].get<unsigned int>();
 				if (equipmentEntry.contains("rounds"))
-					equipment.rounds = equipmentEntry["rounds"].get<unsigned int>();
+					equipment.maxRounds = equipmentEntry["rounds"].get<unsigned int>();
 				if (equipmentEntry.contains("description"))
 					equipment.description = equipmentEntry["description"].get<std::string>();
 

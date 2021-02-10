@@ -10,9 +10,16 @@ namespace RpgGame {
 
 	/*
 		Todo:
-		- Add actions players can take
-		- HP / sp of players
-		- attack damage calculation
+		- https://megamitensei.fandom.com/wiki/Damage
+		- player actions
+		- gun attacks
+		- strength attacks
+		- magic attacks
+		- Modifiers:
+			* buffs/debuffs
+			* passive skills
+			* end damage variance
+			* level difference multipliers
 	*/
 
 	class CombatSystem : public System {
@@ -29,7 +36,18 @@ namespace RpgGame {
 
 		EntityId GetRandomEnemyTarget(EntityId toPickFor);
 
+		std::vector<EntityId> FilterAliveEntities(std::vector<EntityId> characterOrOpponentVector);
+
+		// attack power for a gun or melee weapon
+		float GetCharacterAttackPower(Equipment* meleeWeapon, CombatStat* attackerStats);
+
+		float SubtractDefense(float baseAttackDamage, CombatStat* defendantStats, Equipment* defendantArmor);
+
 		void PerformMeleeAttack(EntityId performer, EntityId target);
+
+		void PerformRangedAttack(EntityId performer, EntityId target);
+
+		void PerformSkill(EntityId performer, EntityId target);
 
 		void EndTurn();
 		

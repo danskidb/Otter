@@ -21,9 +21,12 @@ namespace RpgGame {
 
 		// Verify characters
 		OT_ASSERT(_characters.size() <= maxCharacters, "Attempted to start combat with " + std::to_string(_characters.size()) + " characters, but the max supported is " + std::to_string(maxCharacters));
-		for (EntityId character : _characters)
+		for (EntityId characterEntity : _characters)
 		{
-			OT_ASSERT(coordinator->HasComponent<CharacterComponent>(character), "Character does not have a CharacterComponent!");
+			OT_ASSERT(coordinator->HasComponent<CharacterComponent>(characterEntity), "Character does not have a CharacterComponent!");
+			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(characterEntity);
+			Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+			e->RefillAmmo();
 		}
 		characters = _characters;
 
@@ -58,22 +61,43 @@ namespace RpgGame {
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();
 		EntityId entity = turnOrder[currentTurn];
+		CombatComponent& combatData = coordinator->GetComponent<CombatComponent>(entity);
 
 		if (currentTurn == 0)
 			DebugPrintState();
 
+		if (!combatData.IsAlive())
+		{
+			EndTurn();
+			return;
+		}
+
 		if (IsCharacter(entity)) 
 		{
 			//todo: give player choice
+			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entity);
+			Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+			if (e->rounds > 0)
+			{
+				int shotsToFire = e->rounds;
+				for (int i = 0; i < shotsToFire; i++)
+				{
+					EntityId target = GetRandomEnemyTarget(entity);
+					PerformRangedAttack(entity, target);
+				}
+			}
+			else
+			{
+				EntityId target = GetRandomEnemyTarget(entity);
+				PerformMeleeAttack(entity, target);
+			}
 		}
 		else
 		{
-			//todo: process AI turn
+			//todo: parse AI behaviour
+			EntityId target = GetRandomEnemyTarget(entity);
+			PerformMeleeAttack(entity, target);
 		}
-
-		//debug:
-		EntityId target = GetRandomEnemyTarget(entity);
-		PerformMeleeAttack(entity, target);
 	}
 
 	EntityId CombatSystem::GetRandomEnemyTarget(EntityId toPickFor)
@@ -85,14 +109,55 @@ namespace RpgGame {
 
 		if (IsCharacter(toPickFor))
 		{
-			std::uniform_int_distribution<int> distribution(0, opponents.size() - 1);
-			return opponents[distribution(generator)];
+			std::vector<EntityId> aliveOpponents = FilterAliveEntities(opponents);
+			std::uniform_int_distribution<int> distribution(0, aliveOpponents.size() - 1);
+			return aliveOpponents[distribution(generator)];
 		}
 		else
 		{
-			std::uniform_int_distribution<int> distribution(0, characters.size() - 1);
-			return characters[distribution(generator)];
+			std::vector<EntityId> aliveCharacters = FilterAliveEntities(characters);
+			std::uniform_int_distribution<int> distribution(0, aliveCharacters.size() - 1);
+			return aliveCharacters[distribution(generator)];
 		}
+	}
+
+	std::vector<EntityId> CombatSystem::FilterAliveEntities(std::vector<EntityId> characterOrOpponentVector)
+	{
+		Coordinator* coordinator = Coordinator::GetInstance();
+		std::vector<EntityId> result;
+
+		for (EntityId entity : characterOrOpponentVector)
+		{
+			CombatComponent& combatData = coordinator->GetComponent<CombatComponent>(entity);
+			if (combatData.IsAlive())
+				result.push_back(entity);
+		}
+
+		return result;
+	}
+
+	float CombatSystem::GetCharacterAttackPower(Equipment* meleeOrRangedWeapon, CombatStat* attackerStats)
+	{
+		OT_ASSERT(meleeOrRangedWeapon != nullptr, "GetCharacterAttackPower: meleeOrRangedWeapon was a nullptr!");
+		OT_ASSERT(attackerStats != nullptr, "GetCharacterAttackPower: attackerStats was a nullptr!");
+		OT_ASSERT(meleeOrRangedWeapon->slot == EEquipmentSlot::MeleeWeapon || meleeOrRangedWeapon->slot == EEquipmentSlot::RangeWeapon, "GetCharacterAttackPower: Attempted to get Melee Attack Damage with a non-melee weapon! Equipment used: " + meleeOrRangedWeapon->name);
+		return std::sqrt(meleeOrRangedWeapon->attack) * std::sqrt(attackerStats->strength);
+	}
+
+	float CombatSystem::SubtractDefense(float baseAttackDamage, CombatStat* defendantStats, Equipment* defendantArmor)
+	{
+		OT_ASSERT(defendantStats != nullptr, "SubtractDefense: defendantStats was a nullptr.");
+		float result = baseAttackDamage;
+
+		unsigned int armor = 0;
+		if (defendantArmor != nullptr)
+		{
+			OT_ASSERT(defendantArmor->slot == EEquipmentSlot::Armor, "SubtractDefense: Attempted to get Armor defense with non-armor! Equipment used: " + defendantArmor->name);
+			armor = defendantArmor->defense;
+		}
+	
+		result /= std::sqrt((defendantStats->endurance * 8) + armor);
+		return result;
 	}
 
 	void CombatSystem::PerformMeleeAttack(EntityId performer, EntityId target)
@@ -100,8 +165,23 @@ namespace RpgGame {
 		Coordinator* coordinator = Coordinator::GetInstance();
 		CombatComponent& targetCombatComponent = coordinator->GetComponent<CombatComponent>(target);
 
-		//temporary, attack character for <level> damage
-		int dmg = GetLevel(performer);
+		int dmg;
+		if (coordinator->HasComponent<CharacterComponent>(performer))
+		{
+			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(performer);
+			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(performer);
+			PersonaComponent& defendant = coordinator->GetComponent<PersonaComponent>(target);
+
+			Equipment* e = &character.allEquipment[EEquipmentSlot::MeleeWeapon];
+			float atkDmg = GetCharacterAttackPower(e, &persona.stats);
+			dmg = std::round(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+		}
+		else
+		{
+			//temporary
+			dmg = GetLevel(performer);
+		}
+
 		targetCombatComponent.hp -= dmg;
 		OT_INFO(GetName(performer) + " attacked " + GetName(target) + " with Melee for " + std::to_string(dmg) + " damage.");
 
@@ -109,6 +189,39 @@ namespace RpgGame {
 			OT_INFO(GetName(target) + " fainted.");
 
 		EndTurn();
+	}
+
+	void CombatSystem::PerformRangedAttack(EntityId performer, EntityId target)
+	{
+		Coordinator* coordinator = Coordinator::GetInstance();
+
+		OT_ASSERT(coordinator->HasComponent<CharacterComponent>(performer), "PerformRangedAttack: performer is not a character!");
+		CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(performer);
+
+		PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(performer);
+		PersonaComponent& defendant = coordinator->GetComponent<PersonaComponent>(target);
+		CombatComponent& defendantCombatComponent = coordinator->GetComponent<CombatComponent>(target);
+
+		Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+		if (e->rounds <= 0)
+		{
+			OT_INFO(GetName(performer) + " attempted to fire a gun with no rounds remaining.");
+			return;
+		}
+
+		float atkDmg = GetCharacterAttackPower(e, &persona.stats);
+		int dmg = std::round(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+		e->rounds--;
+
+		defendantCombatComponent.hp -= dmg;
+		OT_INFO(GetName(performer) + " attacked " + GetName(target) + " with Range for " + std::to_string(dmg) + " damage. They have " + std::to_string(e->rounds) + " rounds left");
+
+		if (!defendantCombatComponent.IsAlive())
+			OT_INFO(GetName(target) + " fainted.");
+
+		// todo: if fired a gun this round, you can't do any action other than performing a ranged attack. You can pick a different target or stop to perserve ammo.
+		if (e->rounds <= 0)
+			EndTurn();
 	}
 
 	void CombatSystem::EndTurn()
@@ -179,6 +292,11 @@ namespace RpgGame {
 		for (int i = 0; i < turnOrder.size(); i++)
 		{
 			EntityId entityId = turnOrder[i];
+
+			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
+			if (!combatComponent.IsAlive())
+				continue;
+
 			std::string toPrint;
 
 			if (i == currentTurn)
@@ -186,7 +304,6 @@ namespace RpgGame {
 			else
 				toPrint += "- ";
 
-			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
 			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(entityId);
 			if (coordinator->HasComponent<CharacterComponent>(entityId))
 			{
