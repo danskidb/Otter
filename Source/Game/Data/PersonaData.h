@@ -101,6 +101,15 @@ namespace RpgGame {
 		EnemyAdvantage
 	};
 
+	enum class ECombatAction {
+		Melee,
+		Gun,
+		Skill,
+		Consumable,
+		Guard,
+		_MAX_ENTRY,
+	};
+
 	struct CombatStat {
 		int strength = 0;
 		int magic = 0;

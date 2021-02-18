@@ -11,11 +11,12 @@ namespace RpgGame {
 	/*
 		Todo:
 		- https://megamitensei.fandom.com/wiki/Damage
-		- player actions
+		- player actions INPUT
 		- gun attacks
 		- strength attacks
 		- magic attacks
 		- Modifiers:
+			* effective
 			* buffs/debuffs
 			* passive skills
 			* end damage variance
@@ -32,7 +33,7 @@ namespace RpgGame {
 		// Generates a new turn order list and shuffles it. Based on characters and opponents
 		void GenerateTurnOrder();
 
-		void OnStartTurn();
+		void OnStartTurn(bool isRestart = false);
 
 		EntityId GetRandomEnemyTarget(EntityId toPickFor);
 
@@ -56,6 +57,8 @@ namespace RpgGame {
 
 		// Resets the combat system
 		void FinishCombat();
+
+		ECombatAction AskPlayerAction();
 
 		// Loops through turn order and prints lv, name, etc to console.
 		void DebugPrintState();

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <iostream>
 
 namespace RpgGame {
 
@@ -57,7 +58,7 @@ namespace RpgGame {
 		turnOrder = tempVector;
 	}
 
-	void CombatSystem::OnStartTurn()
+	void CombatSystem::OnStartTurn(bool isRestart)
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();
 		EntityId entity = turnOrder[currentTurn];
@@ -74,22 +75,39 @@ namespace RpgGame {
 
 		if (IsCharacter(entity)) 
 		{
-			//todo: give player choice
+			ECombatAction playerAction = AskPlayerAction();
 			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entity);
-			Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
-			if (e->rounds > 0)
+
+			switch (playerAction)
 			{
-				int shotsToFire = e->rounds;
-				for (int i = 0; i < shotsToFire; i++)
-				{
+				case ECombatAction::Melee: {
 					EntityId target = GetRandomEnemyTarget(entity);
-					PerformRangedAttack(entity, target);
+					PerformMeleeAttack(entity, target);
+					break;
 				}
-			}
-			else
-			{
-				EntityId target = GetRandomEnemyTarget(entity);
-				PerformMeleeAttack(entity, target);
+
+				case ECombatAction::Gun: {
+					Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+					if (e->rounds > 0)
+					{
+						int shotsToFire = e->rounds;
+						for (int i = 0; i < shotsToFire; i++)
+						{
+							EntityId target = GetRandomEnemyTarget(entity);
+							PerformRangedAttack(entity, target);
+						}
+					}
+					else
+					{
+						OT_WARN("" + GetName(entity) + " has no bullets remaining!");
+						OnStartTurn(true);
+					}
+					break;
+				}
+
+				default: {
+					OT_ERROR("An invalid action was chosen!");
+				}
 			}
 		}
 		else
@@ -282,6 +300,35 @@ namespace RpgGame {
 		currentRound = 1;
 		combatOngoing = false;
 		OT_INFO("Combat Finished.");
+	}
+
+	ECombatAction CombatSystem::AskPlayerAction()
+	{
+		OT_INFO("Select action: [0] Melee, [1] Gun");
+		std::string userInput;
+		std::cin >> userInput;
+
+		if (userInput.size() != 1)
+		{
+			OT_WARN("Invalid input length. Please try again");
+			return AskPlayerAction();
+		}
+
+		bool isNumber = !userInput.empty() && std::find_if(userInput.begin(), userInput.end(), [](unsigned char c) { return !std::isdigit(c); }) == userInput.end();
+		if (!isNumber)
+		{
+			OT_WARN("Invalid input, NaN. Please try again");
+			return AskPlayerAction();
+		}
+
+		int entry = std::stoi(userInput);
+		if (entry < 0 || entry > 1)//entry >= (int)ECombatAction::_MAX_ENTRY)
+		{
+			OT_WARN("Invalid input, outside of range. Please try again");
+			return AskPlayerAction();
+		}
+
+		return static_cast<ECombatAction>(entry);
 	}
 
 	void CombatSystem::DebugPrintState()
