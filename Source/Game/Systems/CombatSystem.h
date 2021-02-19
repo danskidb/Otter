@@ -58,7 +58,13 @@ namespace RpgGame {
 		// Resets the combat system
 		void FinishCombat();
 
+		// Asks the player for a supported action.
 		ECombatAction AskPlayerAction();
+
+		// Asks the player to select a target from the turn order that's alive.
+		// Todo: handle filtering, like including dead characters or only opponents.
+		// Todo: Implement cancelling and going back to AskPlayerAction.
+		EntityId AskPlayerTarget();
 
 		// Loops through turn order and prints lv, name, etc to console.
 		void DebugPrintState();

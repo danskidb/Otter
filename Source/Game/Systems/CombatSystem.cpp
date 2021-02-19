@@ -73,6 +73,7 @@ namespace RpgGame {
 			return;
 		}
 
+		// If there's a character, it means that we can control it.
 		if (IsCharacter(entity)) 
 		{
 			ECombatAction playerAction = AskPlayerAction();
@@ -81,7 +82,7 @@ namespace RpgGame {
 			switch (playerAction)
 			{
 				case ECombatAction::Melee: {
-					EntityId target = GetRandomEnemyTarget(entity);
+					EntityId target = AskPlayerTarget();
 					PerformMeleeAttack(entity, target);
 					break;
 				}
@@ -93,7 +94,7 @@ namespace RpgGame {
 						int shotsToFire = e->rounds;
 						for (int i = 0; i < shotsToFire; i++)
 						{
-							EntityId target = GetRandomEnemyTarget(entity);
+							EntityId target = AskPlayerTarget();
 							PerformRangedAttack(entity, target);
 						}
 					}
@@ -329,6 +330,45 @@ namespace RpgGame {
 		}
 
 		return static_cast<ECombatAction>(entry);
+	}
+
+	EntityId CombatSystem::AskPlayerTarget()
+	{
+		EntityId currentTurnEntity = turnOrder[currentTurn];
+		OT_ASSERT(IsCharacter(currentTurnEntity), "Attempted to ask for a player target on a non-character!");
+
+		std::string userChoice = "Select Target: ";
+		std::vector<EntityId> aliveEntities = FilterAliveEntities(turnOrder);
+		for (int i = 0; i < aliveEntities.size(); ++i)
+		{
+			userChoice += "[" + std::to_string(i) + "] " + GetName(aliveEntities[i]) + " ";
+		}
+
+		OT_INFO(userChoice);
+		std::string userInput;
+		std::cin >> userInput;
+
+		if (userInput.size() != 1)
+		{
+			OT_WARN("Invalid input length. Please try again");
+			return AskPlayerTarget();
+		}
+
+		bool isNumber = !userInput.empty() && std::find_if(userInput.begin(), userInput.end(), [](unsigned char c) { return !std::isdigit(c); }) == userInput.end();
+		if (!isNumber)
+		{
+			OT_WARN("Invalid input, NaN. Please try again");
+			return AskPlayerTarget();
+		}
+
+		int entry = std::stoi(userInput);
+		if (entry < 0 || entry >= aliveEntities.size())
+		{
+			OT_WARN("Invalid input, outside of range. Please try again");
+			return AskPlayerTarget();
+		}
+
+		return aliveEntities[entry];
 	}
 
 	void CombatSystem::DebugPrintState()
