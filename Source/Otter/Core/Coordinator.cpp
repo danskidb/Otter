@@ -20,4 +20,9 @@ namespace Otter {
 		componentManager->EntityDestroyed(entityId);
 		systemManager->EntityDestroyed(entityId);
 	}
+
+	void Coordinator::OnTick(float deltaTime)
+	{
+		componentManager->OnTick(deltaTime);
+	}
 }

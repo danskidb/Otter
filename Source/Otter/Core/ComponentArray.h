@@ -11,6 +11,7 @@ namespace Otter {
 	public:
 		virtual ~IComponentArray() = default;	// make virtual, ensure default deconstructor being fired in ComponentArray when destroying an IComponentArray
 		virtual void EntityDestroyed(EntityId entityId) = 0; // pure virtual func, ensure implementation
+		virtual void OnTick(float deltaTime) = 0;
 	};
 
 	template<typename T>
@@ -26,6 +27,7 @@ namespace Otter {
 			entityToIndexMap[entityId] = newIndex;
 			indexToEntityMap[newIndex] = entityId;
 			componentArray[newIndex] = component;
+			component.OnComponentAdded();
 
 			++mSize;
 		}
@@ -37,6 +39,7 @@ namespace Otter {
 			// Copy element at end into deleted element's place to maintain density
 			size_t indexOfRemovedEntity = entityToIndexMap[entityId];
 			size_t indexOfLastElement = mSize - 1;
+			componentArray[indexOfRemovedEntity].OnComponentRemoved();
 			componentArray[indexOfRemovedEntity] = componentArray[indexOfLastElement];
 
 			// Update map to point to moved spot
@@ -60,8 +63,20 @@ namespace Otter {
 		{
 			if (entityToIndexMap.find(entityId) != entityToIndexMap.end())
 			{
+				T component = GetData(entityId);
+				component.OnEntityPreDestruct();
+
 				// Remove the entity's component if it existed
 				RemoveData(entityId);
+			}
+		}
+
+		void OnTick(float deltaTime) override
+		{
+			for (size_t i = 0; i < componentArray.size(); ++i)
+			{
+				if (componentArray[i].GetComponentWantsTick())
+					componentArray[i].OnTick(deltaTime);
 			}
 		}
 

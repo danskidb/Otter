@@ -81,6 +81,9 @@
     <ClInclude Include="Source\Game\Systems\Compendium.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Otter\Components\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\SandboxApp.cpp">

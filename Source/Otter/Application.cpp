@@ -26,6 +26,7 @@ namespace Otter {
 			auto startTime = std::chrono::high_resolution_clock::now();
 
 			OnTick(dt);
+			coordinator->OnTick(dt);
 
 			auto stopTime = std::chrono::high_resolution_clock::now();
 			dt = std::chrono::duration<float, std::chrono::seconds::period>(stopTime - startTime).count();

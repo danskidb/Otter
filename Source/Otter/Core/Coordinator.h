@@ -34,6 +34,8 @@ namespace Otter {
 		
 		void DestroyEntity(EntityId entityId);
 
+		void OnTick(float deltaTime);
+
 		template<typename T> 
 		void RegisterComponent()
 		{

@@ -18,10 +18,4 @@
 	- https://austinmorlan.com/posts/entity_component_system/
 	- https://github.com/TheCherno/Hazel
 	- https://thomas.trocha.com/blog/use-nlohmann-json-for-serialization/
-
-	todo:
-	- json serializer
-	- combat system
-	- more logging on Otter/Core/
-	- event system
 */

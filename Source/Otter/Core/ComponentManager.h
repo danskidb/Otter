@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <memory>
 #include <any>
+#include "Otter/Components/Component.h"
+#include <type_traits>
 
 namespace Otter {
 
@@ -14,18 +16,22 @@ namespace Otter {
 	public:
 		void EntityDestroyed(EntityId entityId);
 
+		void OnTick(float deltaTime);
+
 		template<typename T>
 		void RegisterComponent()
 		{
 			const char* typeName = typeid(T).name();
 
-			OT_ASSERT(mComponentTypes.find(typeName) == mComponentTypes.end(), "Registering component type more than once.");
+			OT_ASSERT(componentTypes.find(typeName) == componentTypes.end(), "Registering component type more than once.");
+			bool based = std::is_base_of<Component, T>::value;
+			OT_ASSERT(based, "Attempted to register a component not inheriting from Otter::Component");
 
 			// Add this component type to the component type map
-			mComponentTypes.insert({ typeName, mNextComponentType });
+			componentTypes.insert({ typeName, mNextComponentType });
 
 			// Create a ComponentArray pointer and add it to the component arrays map
-			mComponentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
+			componentArrays.insert({ typeName, std::make_shared<ComponentArray<T>>() });
 
 			// Increment the value so that the next component registered will be different
 			++mNextComponentType;
@@ -36,10 +42,10 @@ namespace Otter {
 		{
 			const char* typeName = typeid(T).name();
 
-			OT_ASSERT(mComponentTypes.find(typeName) != mComponentTypes.end(), "Component not registered before use.");
+			OT_ASSERT(componentTypes.find(typeName) != componentTypes.end(), "Component not registered before use.");
 
 			// Return this component's type - used for creating signatures
-			return mComponentTypes[typeName];
+			return componentTypes[typeName];
 		}
 
 		template<typename T>
@@ -65,10 +71,10 @@ namespace Otter {
 
 	private:
 		// Map from type string pointer to a component type
-		std::unordered_map<const char*, ComponentType> mComponentTypes{};
+		std::unordered_map<const char*, ComponentType> componentTypes{};
 
 		// Map from type string pointer to a component array
-		std::unordered_map<const char*, std::shared_ptr<IComponentArray>> mComponentArrays{};
+		std::unordered_map<const char*, std::shared_ptr<IComponentArray>> componentArrays{};
 
 		// The component type to be assigned to the next registered component - starting at 0
 		ComponentType mNextComponentType{};
@@ -79,9 +85,9 @@ namespace Otter {
 		{
 			const char* typeName = typeid(T).name();
 
-			OT_ASSERT(mComponentTypes.find(typeName) != mComponentTypes.end(), "Component not registered before use.");
+			OT_ASSERT(componentTypes.find(typeName) != componentTypes.end(), "Component not registered before use.");
 
-			return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[typeName]);
+			return std::static_pointer_cast<ComponentArray<T>>(componentArrays[typeName]);
 		}
 	};
 

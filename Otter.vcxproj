@@ -19,6 +19,7 @@
     <ClInclude Include="Source\Game\SandboxApp.h" />
     <ClInclude Include="Source\Otter.h" />
     <ClInclude Include="Source\Otter\Application.h" />
+    <ClInclude Include="Source\Otter\Components\Component.h" />
     <ClInclude Include="Source\Otter\Components\Transform2DComponent.h" />
     <ClInclude Include="Source\Otter\Core.h" />
     <ClInclude Include="Source\Otter\Core\ComponentArray.h" />

@@ -2,8 +2,9 @@
 
 #include <vector>
 #include "Data/PersonaData.h"
+#include "Otter/Components/Component.h"
 
 namespace RpgGame {
 	
-	struct CharacterComponent : Character {};
+	class CharacterComponent : public Otter::Component, public Character {};
 }
