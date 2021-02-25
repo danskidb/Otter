@@ -7,7 +7,8 @@ namespace Otter {
 		bool componentWantsTick = false;
 
 	public:
-		Component() {};
+		Component() = default;
+		virtual ~Component() = default;
 
 		bool GetComponentWantsTick() { return componentWantsTick; }
 
