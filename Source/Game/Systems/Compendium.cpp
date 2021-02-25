@@ -96,10 +96,6 @@ namespace RpgGame {
 		{
 			json skillEntry = itr.value();
 			CombatSkill combatSkill = skillEntry.get<CombatSkill>();
-			combatSkill.name = itr.key();
-
-			if (skillEntry.contains("cost"))
-				combatSkill.cost = skillEntry["cost"].get<int>();
 
 			// element
 			std::string elementString = skillEntry["element"].get<std::string>();
@@ -107,16 +103,64 @@ namespace RpgGame {
 			OT_ASSERT(element.has_value(), "Element " + elementString + " is not defined - found on skillId " + combatSkill.name);
 			combatSkill.element = element.value();
 
-			// cost type
-			if (combatSkill.element != EElement::Passive && combatSkill.element != EElement::Trait)
+			// element
+			std::string costTypeString = skillEntry["costType"].get<std::string>();
+			auto costType = magic_enum::enum_cast<ECombatSkillCostType>(costTypeString);
+			OT_ASSERT(costType.has_value(), "CostType " + costTypeString + " is not defined - found on skillId " + combatSkill.name);
+			combatSkill.costType = costType.value();
+
+			// TargetRestriction
+			std::string targetRestrictionString = skillEntry["targetRestriction"].get<std::string>();
+			auto targetRestriction = magic_enum::enum_cast<ESkillTargetRestriction>(targetRestrictionString);
+			OT_ASSERT(targetRestriction.has_value(), "targetRestriction " + targetRestrictionString + " is not defined - found on skillId " + combatSkill.name);
+			combatSkill.targetRestriction = targetRestriction.value();
+
+			// effects (optional)
+			if (skillEntry.contains("effects"))
 			{
-				combatSkill.costType = combatSkill.cost < 100 ? ECombatSkillCostType::Percentage_HP : ECombatSkillCostType::Fixed_SP;
-				if (combatSkill.costType == ECombatSkillCostType::Fixed_SP)
-					combatSkill.cost /= 100;
+				json effectJsonArray = skillEntry["effects"];
+				for (auto& effectItr : effectJsonArray.items())
+				{
+					std::string effectString = effectItr.value();
+					auto effect = magic_enum::enum_cast<ESkillEffect>(effectString);
+					OT_ASSERT(effect.has_value(), "effect " + effectString + " is not defined - found on skillId " + combatSkill.name);
+					combatSkill.effects.push_back(effect.value());
+				}
 			}
-			else
+
+			// effect modifiers (optional)
+			if (skillEntry.contains("effectModifiers"))
 			{
-				combatSkill.costType = ECombatSkillCostType::None;
+				json effectModifierJsonArray = skillEntry["effectModifiers"];
+				for (auto& effectModifierItr : effectModifierJsonArray.items())
+				{
+					std::string effectModifierString = effectModifierItr.value();
+					auto effectModifier = magic_enum::enum_cast<ESkillEffectModifier>(effectModifierString);
+					OT_ASSERT(effectModifier.has_value(), "effectModifier " + effectModifierString + " is not defined - found on skillId " + combatSkill.name);
+					combatSkill.effectModifiers.push_back(effectModifier.value());
+				}
+			}
+
+			// ailments to inflict (optional)
+			if (skillEntry.contains("ailmentToInflict"))
+			{
+				json ailmentToInflictJsonArray = skillEntry["ailmentToInflict"];
+				for (auto& ailmentToInflictItr : ailmentToInflictJsonArray.items())
+				{
+					std::string ailmentToInflictString = ailmentToInflictItr.value();
+					auto ailment = magic_enum::enum_cast<EAilment>(ailmentToInflictString);
+					OT_ASSERT(ailment.has_value(), "ailment " + ailmentToInflictString + " is not defined - found on skillId " + combatSkill.name);
+					combatSkill.ailmentToInflict.push_back(ailment.value());
+				}
+			}
+
+			// ailmentToInflictOdds
+			if (skillEntry.contains("ailmentToInflictOdds"))
+			{
+				std::string ailmentToInflictOddsString = skillEntry["ailmentToInflictOdds"].get<std::string>();
+				auto ailmentToInflictOdds = magic_enum::enum_cast<EOdds>(ailmentToInflictOddsString);
+				OT_ASSERT(ailmentToInflictOdds.has_value(), "ailmentToInflictOdds " + ailmentToInflictOddsString + " is not defined - found on skillId " + combatSkill.name);
+				combatSkill.ailmentToInflictOdds = ailmentToInflictOdds.value();
 			}
 
 			skillCompendium.insert({ itr.key(), combatSkill });

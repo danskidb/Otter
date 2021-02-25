@@ -9,12 +9,25 @@ using namespace Otter;
 namespace RpgGame {
 
 	/*
-		Todo:
+		//TODO:
+		Looks like we'll want some sort of Temporary arrays with duration for player element affinities
+
+		- Multiply user’s next Phys attack damage by 2.5.
+		- Multiply user’s next magical attack damage by 2.5.
+		- Wall barriers
+		- Absorbs all non-almighty attacks once and removes weakness.
+		- Repels incoming non-almighty attack for all allies.
+		- Applies Attack Master and Concentrate on one ally.
+
 		- https://megamitensei.fandom.com/wiki/Damage
-		- player actions INPUT
-		- gun attacks
-		- strength attacks
-		- magic attacks
+		- skills
+		- Technical
+		- ailment: https://samurai-gamers.com/persona-5/list-conditions-ailments-persona-5-p5/
+		- https://samurai-gamers.com/persona-5/support-skills-list/
+		- https://samurai-gamers.com/persona-5/healing-skills-list/
+		- https://samurai-gamers.com/persona-5/status-recovery-skills-list/
+		- https://samurai-gamers.com/persona-5/passive-skills-list/
+		- https://samurai-gamers.com/persona-5/status-ailments-list/
 		- Modifiers:
 			* effective
 			* buffs/debuffs

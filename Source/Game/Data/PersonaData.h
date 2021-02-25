@@ -53,6 +53,7 @@ namespace RpgGame {
 		Lust,
 		Wrath,
 		Envy,
+		Panic
 	};
 
 	enum class EArcana {
@@ -110,6 +111,70 @@ namespace RpgGame {
 		_MAX_ENTRY,
 	};
 
+	enum class EOpponentType {
+		Shadow,
+		MinorBoss,	// Increased resistance against all ailments
+		MajorBoss,	// Immune to all ailments
+	};
+
+	enum class EOdds {
+		Low,
+		Medium,
+		High,
+		Guaranteed
+	};
+
+	enum class ESkillTargetRestriction {
+		None,
+		OneFoe,
+		AllFoes,
+		OneAlly,
+		AllAllies,
+		Self
+	};
+
+	enum class ESkillEffect {
+		// Damage
+		DamageMinuscule,
+		DamageLight,
+		DamageMedium,
+		DamageHeavy,
+		DamageSevere,
+		DamageColossal,
+		InstaKillSmall,
+		InstaKillMedium,
+		InstaKillHigh,
+		InstaKillFeared,
+		DrainSP,
+		DrainHP,
+		HalveHP,
+
+		// Healing
+		HealSlightly,
+		HealModerately,
+		HealFull,
+		ReviveHalf,
+		ReviveFull,
+
+		// Support
+		IncreaseAttack,
+		IncreaseDefense,
+		IncreaseAgility,
+		IncreaseCritical,
+		DecreaseAttack,
+		DecreaseDefense,
+		DecreaseAgility,
+	};
+
+	enum class ESkillEffectModifier {
+		PowerUpBatonPass,		// stronger if current turn is a baton pass
+		PowerUpAmbush,			// stronger if ECombatStartType == Ambush
+		PowerUpEnemyAdvantage,	// stronger if ECombatStartType == EnemyAdvantage
+		PowerUpDown,			// stronger if the enemy is downed
+		HighCritical,
+		HighAccuracy,
+	};
+
 	struct CombatStat {
 		int strength = 0;
 		int magic = 0;
@@ -121,12 +186,21 @@ namespace RpgGame {
 	struct CombatSkill {
 		std::string name;
 		EElement element;
-		std::string effect;
+		std::string description;
 
 		ECombatSkillCostType costType = ECombatSkillCostType::None;
 		int cost = 0;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CombatSkill, effect);
+		ESkillTargetRestriction targetRestriction;
+		std::vector<ESkillEffect> effects;
+		std::vector<ESkillEffectModifier> effectModifiers;
+		std::vector<EAilment> ailmentToInflict;			// random chance of one
+		EOdds ailmentToInflictOdds;
+
+		int amountAttacksMin = 0;
+		int amountAttacksMax = 0;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CombatSkill, name, description, cost, amountAttacksMin, amountAttacksMax);
 	};
 
 	struct Persona {
@@ -167,8 +241,6 @@ namespace RpgGame {
 		unsigned int attack = 0;
 		unsigned int rounds = 0;
 		unsigned int maxRounds = 0;
-		//effect - maybe some sort of scripting would be useful here?
-		//for now we just go on like this to get basic combat in
 
 		void RefillAmmo() { rounds = maxRounds; }
 	};
