@@ -54,7 +54,15 @@ namespace Otter
 	OString::~OString()
 	{
 		printf("Deleting OString with content %s\n", content);
-		delete content;
+		delete[] content;
+	}
+
+	OString::OString(size_t sizeToReserve)
+	{
+		content = new char[sizeToReserve + 1];
+		content[sizeToReserve] = '\0';
+		contentSize = sizeToReserve;
+		printf("Created empty OString of size %zu\n", sizeToReserve);
 	}
 
 	OString& OString::operator=(const OString& toCopyAssign)
@@ -81,6 +89,55 @@ namespace Otter
 			toMoveAssign.contentSize = 0;
 			printf("MoveAssigned OString\n");
 		}
+
+		return *this;
+	}
+
+	OString OString::operator+(const OString& toAppend)
+	{
+		OString result(contentSize + toAppend.contentSize);
+		memcpy(result.content, content, contentSize);
+		memcpy(result.content + contentSize, toAppend.content, toAppend.contentSize + 1);	// increment pointer location to the end of the previous memcopy
+
+		return result;
+	}
+
+	OString OString::operator+(const char* toAppend)
+	{
+		size_t appendSize = strlen(toAppend);
+		OString result(contentSize + appendSize);
+		memcpy(result.content, content, contentSize);
+		memcpy(result.content + contentSize, toAppend, appendSize + 1);
+
+		return result;
+	}
+
+	//todo can we resize existing memory here instead of re-allocating?
+	OString& OString::operator+=(const OString& toAppend)
+	{
+		size_t newSize = contentSize + toAppend.contentSize;
+		char* newContent = new char[newSize + 1];
+		memcpy(newContent, content, contentSize);
+		memcpy(newContent + contentSize, toAppend.content, toAppend.contentSize + 1);
+
+		delete[] content;
+		contentSize = newSize;
+		content = newContent;
+
+		return *this;
+	}
+
+	OString& OString::operator+=(const char* toAppend)
+	{
+		size_t appendSize = strlen(toAppend);
+		size_t newSize = contentSize + appendSize;
+		char* newContent = new char[newSize + 1];
+		memcpy(newContent, content, contentSize);
+		memcpy(newContent + contentSize, toAppend, appendSize + 1);
+
+		delete[] content;
+		contentSize = newSize;
+		content = newContent;
 
 		return *this;
 	}

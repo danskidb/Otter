@@ -19,9 +19,18 @@ namespace Otter
 		OString(OString&& toMove);
 		~OString();
 
+	protected:
+		OString(size_t sizeToReserve);
+
+	public:
 		// Operators
 		OString& operator=(const OString& toCopyAssign);
 		OString& operator=(OString&& toMoveAssign);
+
+		OString operator+(const OString& toAppend);
+		OString operator+(const char* toAppend);
+		OString& operator+=(const OString& toAppend);
+		OString& operator+=(const char* toAppend);
 
 		// Functions
 		const char* GetCString();
