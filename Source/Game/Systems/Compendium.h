@@ -23,6 +23,7 @@ namespace RpgGame {
 		std::vector<Persona> FindPersonaByArcana(EArcana arcana);
 
 		bool FindSkillById(std::string skillId, CombatSkill &outSkill);
+		std::vector<CombatSkill> FindSkillsById(std::vector<std::string> skillIds);
 		std::vector<CombatSkill> FindSkillByElement(EElement element);
 
 		bool FindEquipmentById(std::string equipmentId, Equipment &outEquipment);

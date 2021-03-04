@@ -203,7 +203,7 @@ namespace RpgGame {
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CombatSkill, name, description, cost, amountAttacksMin, amountAttacksMax);
 	};
 
-	struct Persona {
+	struct Persona {		//todo: lock down this struct so there's a distinction between runtime and static data.
 		std::string name;
 		Level level = 0;
 		EArcana arcana;
@@ -212,6 +212,7 @@ namespace RpgGame {
 		CombatStat stats;
 		std::map<std::string, int> skillUnlocks;
 		std::map<EElement, EElementAffinity> elementAffinities;
+		std::vector<std::string> activeSkills;
 
 		std::string item;
 		std::string trait;

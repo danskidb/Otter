@@ -61,7 +61,7 @@ namespace RpgGame {
 
 		void PerformRangedAttack(EntityId performer, EntityId target);
 
-		void PerformSkill(EntityId performer, EntityId target);
+		void PerformSkill(EntityId performer, EntityId target, CombatSkill skill);
 
 		void EndTurn();
 		
@@ -71,8 +71,14 @@ namespace RpgGame {
 		// Resets the combat system
 		void FinishCombat();
 
+		// Verifies std::cin input number
+		bool IsPlayerInputValid(std::string userInput, int amountOptions);
+
 		// Asks the player for a supported action.
 		ECombatAction AskPlayerAction();
+
+		// Asks the player to cast a persona skill
+		bool AskPlayerSkill(CombatSkill &outSkill);
 
 		// Asks the player to select a target from the turn order that's alive.
 		// Todo: handle filtering, like including dead characters or only opponents.

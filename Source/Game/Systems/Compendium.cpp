@@ -14,13 +14,13 @@ namespace RpgGame {
 
 	void Compendium::OnRegistered()
 	{
-		personaCompendium.clear();
 		skillCompendium.clear();
+		personaCompendium.clear();
 		equipmentCompendium.clear();
 		characterCompendium.clear();
 
-		ParsePersonaDatabase();
 		ParseSkillDatabase();
+		ParsePersonaDatabase();
 		ParseEquipmentDatabase();
 		ParseCharacterDatabase();
 	}
@@ -68,12 +68,23 @@ namespace RpgGame {
 				persona.elementAffinities.insert({ elemsImportOrder[i], element.value() });
 			}
 
+			// Skills
 			if (personaEntry.contains("skills"))
 			{
 				json skillTable = personaEntry["skills"];
 				for (auto& skillUnlocks : skillTable.items())
 				{
+					// Not all skills are implemented, so we filter them out of the runtime.
+					CombatSkill c;
+					if (!FindSkillById(skillUnlocks.key(), c))
+						continue;
+
+					// add to list of all unlocks
 					persona.skillUnlocks.insert({ skillUnlocks.key(), skillUnlocks.value() });
+
+					// and lastly, to the skills the persona can actually use with their current level.
+					if (skillUnlocks.value() <= skillUnlocks.value())
+						persona.activeSkills.push_back({ skillUnlocks.key() });
 				}
 			}
 
@@ -289,6 +300,19 @@ namespace RpgGame {
 
 		outSkill = skillCompendium[skillId];
 		return true;
+	}
+
+	std::vector<CombatSkill> Compendium::FindSkillsById(std::vector<std::string> skillIds)
+	{
+		std::vector<CombatSkill> result;
+		for (std::string skillId : skillIds)
+		{
+			CombatSkill c;
+			if (FindSkillById(skillId, c))
+				result.push_back(c);
+		}
+
+		return result;
 	}
 
 	std::vector<CombatSkill> Compendium::FindSkillByElement(EElement element)

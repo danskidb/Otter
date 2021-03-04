@@ -10,6 +10,7 @@
 #include <random>
 #include <chrono>
 #include <iostream>
+#include "Compendium.h"
 
 namespace RpgGame {
 
@@ -104,6 +105,21 @@ namespace RpgGame {
 						OnStartTurn(true);
 					}
 					break;
+				}
+
+				case ECombatAction::Skill: {
+					CombatSkill skill;
+					bool result = AskPlayerSkill(skill);
+					if (!result)
+					{
+						OnStartTurn(true);
+					}
+					else
+					{
+						// todo targetRestrictions
+						EntityId target = AskPlayerTarget();
+						PerformSkill(entity, target, skill);
+					}
 				}
 
 				default: {
@@ -243,6 +259,34 @@ namespace RpgGame {
 			EndTurn();
 	}
 
+	void CombatSystem::PerformSkill(EntityId performer, EntityId target, CombatSkill skill)
+	{
+		Coordinator* coordinator = Coordinator::GetInstance();
+		PersonaComponent& performerPersona = coordinator->GetComponent<PersonaComponent>(performer);
+		CombatComponent& performerCombatData = coordinator->GetComponent<CombatComponent>(performer);
+
+		PersonaComponent& targetPersona = coordinator->GetComponent<PersonaComponent>(target);
+		CombatComponent& targetCombatData = coordinator->GetComponent<CombatComponent>(target);
+
+		// subtract cost
+		switch (skill.costType)
+		{
+			case ECombatSkillCostType::Fixed_SP:
+				performerCombatData.sp -= skill.cost;
+				break;
+			case ECombatSkillCostType::Percentage_HP:
+				performerCombatData.hp -= (skill.cost / 100) * performerCombatData.hp;
+				break;
+		}
+
+		// Decide effectiveness based on target Affinity. (store in multiplier)
+		// Calculate how often this should attack (chance calculation between min-max, if max > min)
+		// For each times should attack
+			// loop through all effects
+			// get random ailment to inflict from list & check if we apply it.
+			
+	}
+
 	void CombatSystem::EndTurn()
 	{
 		if (ShouldFinishCombat())
@@ -303,33 +347,82 @@ namespace RpgGame {
 		OT_INFO("Combat Finished.");
 	}
 
-	ECombatAction CombatSystem::AskPlayerAction()
+	bool CombatSystem::IsPlayerInputValid(std::string userInput, int amountOptions)
 	{
-		OT_INFO("Select action: [0] Melee, [1] Gun");
-		std::string userInput;
-		std::cin >> userInput;
-
 		if (userInput.size() != 1)
 		{
 			OT_WARN("Invalid input length. Please try again");
-			return AskPlayerAction();
+			return false;
 		}
 
 		bool isNumber = !userInput.empty() && std::find_if(userInput.begin(), userInput.end(), [](unsigned char c) { return !std::isdigit(c); }) == userInput.end();
 		if (!isNumber)
 		{
 			OT_WARN("Invalid input, NaN. Please try again");
-			return AskPlayerAction();
+			return false;
 		}
 
 		int entry = std::stoi(userInput);
-		if (entry < 0 || entry > 1)//entry >= (int)ECombatAction::_MAX_ENTRY)
+		if (entry < 0 || entry >= amountOptions)//entry >= (int)ECombatAction::_MAX_ENTRY)
 		{
 			OT_WARN("Invalid input, outside of range. Please try again");
-			return AskPlayerAction();
+			return false;
 		}
 
+		return true;
+	}
+
+	//////////////////////////////////////////////////////
+	// Console & Player interaction
+	ECombatAction CombatSystem::AskPlayerAction()
+	{
+		OT_INFO("Select action: [0] Melee, [1] Gun, [2] Skill");
+		std::string userInput;
+		std::cin >> userInput;
+
+		if (!IsPlayerInputValid(userInput, 3))
+			return AskPlayerAction();
+
+		int entry = std::stoi(userInput);
 		return static_cast<ECombatAction>(entry);
+	}
+
+	bool CombatSystem::AskPlayerSkill(CombatSkill &outSkill)
+	{
+		Coordinator* coordinator = Coordinator::GetInstance();
+		std::shared_ptr<Compendium> compendium = coordinator->GetSystem<Compendium>();
+
+		EntityId currentTurnEntity = turnOrder[currentTurn];
+		OT_ASSERT(IsCharacter(currentTurnEntity), "Attempted to ask for a skill on a non-character!");
+
+		PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(currentTurnEntity);
+		std::string userChoice = "Select Skill: ";
+
+		std::vector<CombatSkill> skills = compendium->FindSkillsById(persona.activeSkills);
+		if (skills.size() <= 0)
+			return false;	//player has no skills so we can't ask them for it.
+
+		for (int i = 0; i < skills.size(); ++i)
+		{
+			userChoice += "[" + std::to_string(i) + "] " + skills[i].name + " ";
+		}
+		userChoice += "[" + std::to_string(skills.size()) + "] Return";
+
+		OT_INFO(userChoice);
+		std::string userInput;
+		std::cin >> userInput;
+
+		if (!IsPlayerInputValid(userInput, skills.size() + 1))
+			return AskPlayerTarget();
+
+		int entry = std::stoi(userInput);
+		if (entry == skills.size())
+		{
+			return false;	// user wants to return
+		}
+
+		outSkill = skills[entry];
+		return true;
 	}
 
 	EntityId CombatSystem::AskPlayerTarget()
@@ -348,26 +441,10 @@ namespace RpgGame {
 		std::string userInput;
 		std::cin >> userInput;
 
-		if (userInput.size() != 1)
-		{
-			OT_WARN("Invalid input length. Please try again");
+		if (!IsPlayerInputValid(userInput, aliveEntities.size()))
 			return AskPlayerTarget();
-		}
-
-		bool isNumber = !userInput.empty() && std::find_if(userInput.begin(), userInput.end(), [](unsigned char c) { return !std::isdigit(c); }) == userInput.end();
-		if (!isNumber)
-		{
-			OT_WARN("Invalid input, NaN. Please try again");
-			return AskPlayerTarget();
-		}
 
 		int entry = std::stoi(userInput);
-		if (entry < 0 || entry >= aliveEntities.size())
-		{
-			OT_WARN("Invalid input, outside of range. Please try again");
-			return AskPlayerTarget();
-		}
-
 		return aliveEntities[entry];
 	}
 
@@ -411,6 +488,9 @@ namespace RpgGame {
 
 	}
 
+
+	//////////////////////////////////////////////////////
+	// Helper Functions
 	bool CombatSystem::IsCharacter(EntityId entityId)
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();

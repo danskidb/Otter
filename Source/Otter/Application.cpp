@@ -14,6 +14,12 @@ namespace Otter {
 	{
 	}
 
+	OString getShit()
+	{
+		OString shit = "Shit";
+		return shit;
+	}
+
 	void Application::Run(int argc, char* argv[], char* envp[])
 	{
 		coordinator = Coordinator::GetInstance();
@@ -21,6 +27,9 @@ namespace Otter {
 		RegisterSystems();
 
 		OString s("yooooo");
+		OString a = s;
+		const char* test = a.GetCString();
+		OString b = getShit();
 
 		OnStart();
 
