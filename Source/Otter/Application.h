@@ -12,7 +12,7 @@ namespace Otter {
 		Application();
 		virtual ~Application();
 
-		void Run();
+		void Run(int argc, char* argv[], char* envp[]);
 
 		virtual void RegisterComponents();
 		virtual void RegisterSystems();

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Components/Transform2DComponent.h"
+#include "Types/OString.h"
 
 namespace Otter {
 
@@ -13,11 +14,13 @@ namespace Otter {
 	{
 	}
 
-	void Application::Run()
+	void Application::Run(int argc, char* argv[], char* envp[])
 	{
 		coordinator = Coordinator::GetInstance();
 		RegisterComponents();
 		RegisterSystems();
+
+		OString s("yooooo");
 
 		OnStart();
 

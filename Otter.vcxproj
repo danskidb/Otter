@@ -34,6 +34,7 @@
     <ClInclude Include="Source\Otter\Math\Vector2.h" />
     <ClInclude Include="Source\Game\Systems\CombatSystem.h" />
     <ClInclude Include="Source\Otter\Utils\Filesystem.h" />
+    <ClInclude Include="Source\Otter\Types\OString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Systems\Compendium.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="Source\Otter\Log.cpp" />
     <ClCompile Include="Source\Game\Systems\CombatSystem.cpp" />
     <ClCompile Include="Source\Otter\Utils\Filesystem.cpp" />
+    <ClCompile Include="Source\Otter\Types\OString.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
