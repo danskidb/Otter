@@ -96,7 +96,7 @@ namespace Otter
 	OString OString::operator+(const OString& toAppend)
 	{
 		OString result(contentSize + toAppend.contentSize);
-		memcpy(result.content, content, contentSize);
+		memcpy(result.content, content, contentSize);										// todo: for all + and += operators, make a generic move/copy func
 		memcpy(result.content + contentSize, toAppend.content, toAppend.contentSize + 1);	// increment pointer location to the end of the previous memcopy
 
 		return result;
@@ -112,7 +112,6 @@ namespace Otter
 		return result;
 	}
 
-	//todo can we resize existing memory here instead of re-allocating?
 	OString& OString::operator+=(const OString& toAppend)
 	{
 		size_t newSize = contentSize + toAppend.contentSize;
@@ -146,4 +145,10 @@ namespace Otter
 	{
 		return content;
 	}
+
+	const size_t OString::Length()
+	{
+		return contentSize;
+	}
+
 }

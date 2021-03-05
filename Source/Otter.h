@@ -8,6 +8,9 @@
 #include "Otter/Core/Types.h"
 #include "Otter/Core/System.h"
 
+#include "Otter/Types/OString.h"
+#include "Otter/Types/OArray.h"
+
 // ---Entry Point---------------------
 #include "Otter/EntryPoint.h"
 // -----------------------------------

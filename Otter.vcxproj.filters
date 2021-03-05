@@ -87,6 +87,9 @@
     <ClInclude Include="Source\Otter\Types\OString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Otter\Types\OArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\SandboxApp.cpp">

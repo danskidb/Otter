@@ -7,10 +7,6 @@ namespace Otter
 	*/
 	class OString
 	{
-	private:
-		char* content;
-		size_t contentSize;	//without null-char
-
 	public:
 		// constructors
 		OString();
@@ -34,6 +30,11 @@ namespace Otter
 
 		// Functions
 		const char* GetCString();
+		const size_t Length();
+
+	private:
+		char* content;
+		size_t contentSize;	//without null-char
 	};
 }
 

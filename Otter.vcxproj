@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Otter\Types\OArray.h" />
     <ClInclude Include="Source\Game\Systems\Compendium.h" />
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
     <ClInclude Include="Source\Game\Components\CombatComponent.h" />
