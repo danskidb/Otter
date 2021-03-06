@@ -1,15 +1,7 @@
 #pragma once
 
 // For use by Otter applications
-
 #include "Otter/Application.h"
-#include "Otter/Log.h"
-#include "Otter/Core/Coordinator.h"
-#include "Otter/Core/Types.h"
-#include "Otter/Core/System.h"
-
-#include "Otter/Types/OString.h"
-#include "Otter/Types/OArray.h"
 
 // ---Entry Point---------------------
 #include "Otter/EntryPoint.h"

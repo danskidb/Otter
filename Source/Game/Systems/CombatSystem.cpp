@@ -1,5 +1,5 @@
 #include "CombatSystem.h"
-#include "Otter/Log.h"
+#include "Otter/Utils/Log.h"
 #include "Otter/Core/Coordinator.h"
 
 #include "Components/CharacterComponent.h"
@@ -51,10 +51,8 @@ namespace RpgGame {
 		tempVector.insert(tempVector.end(), characters.begin(), characters.end());
 		tempVector.insert(tempVector.end(), opponents.begin(), opponents.end());
 
-		unsigned seed = std::chrono::system_clock::now()
-			.time_since_epoch()
-			.count();
-		std::shuffle(tempVector.begin(), tempVector.end(), std::default_random_engine(seed));
+		unsigned int seed = (unsigned int) std::chrono::system_clock::now().time_since_epoch().count();
+		std::shuffle(tempVector.begin(), tempVector.end(), std::default_random_engine((unsigned int) seed));
 
 		turnOrder = tempVector;
 	}
@@ -137,21 +135,19 @@ namespace RpgGame {
 
 	EntityId CombatSystem::GetRandomEnemyTarget(EntityId toPickFor)
 	{
-		unsigned seed = std::chrono::system_clock::now()
-			.time_since_epoch()
-			.count();
+		unsigned int seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
 		std::default_random_engine generator(seed);
 
 		if (IsCharacter(toPickFor))
 		{
 			std::vector<EntityId> aliveOpponents = FilterAliveEntities(opponents);
-			std::uniform_int_distribution<int> distribution(0, aliveOpponents.size() - 1);
+			std::uniform_int_distribution<size_t> distribution(0, aliveOpponents.size() - 1);
 			return aliveOpponents[distribution(generator)];
 		}
 		else
 		{
 			std::vector<EntityId> aliveCharacters = FilterAliveEntities(characters);
-			std::uniform_int_distribution<int> distribution(0, aliveCharacters.size() - 1);
+			std::uniform_int_distribution<size_t> distribution(0, aliveCharacters.size() - 1);
 			return aliveCharacters[distribution(generator)];
 		}
 	}
@@ -176,7 +172,7 @@ namespace RpgGame {
 		OT_ASSERT(meleeOrRangedWeapon != nullptr, "GetCharacterAttackPower: meleeOrRangedWeapon was a nullptr!");
 		OT_ASSERT(attackerStats != nullptr, "GetCharacterAttackPower: attackerStats was a nullptr!");
 		OT_ASSERT(meleeOrRangedWeapon->slot == EEquipmentSlot::MeleeWeapon || meleeOrRangedWeapon->slot == EEquipmentSlot::RangeWeapon, "GetCharacterAttackPower: Attempted to get Melee Attack Damage with a non-melee weapon! Equipment used: " + meleeOrRangedWeapon->name);
-		return std::sqrt(meleeOrRangedWeapon->attack) * std::sqrt(attackerStats->strength);
+		return std::sqrtf((float)meleeOrRangedWeapon->attack) * std::sqrtf((float)attackerStats->strength);
 	}
 
 	float CombatSystem::SubtractDefense(float baseAttackDamage, CombatStat* defendantStats, Equipment* defendantArmor)
@@ -191,7 +187,7 @@ namespace RpgGame {
 			armor = defendantArmor->defense;
 		}
 	
-		result /= std::sqrt((defendantStats->endurance * 8) + armor);
+		result /= std::sqrtf((float)((defendantStats->endurance * 8) + armor));
 		return result;
 	}
 
@@ -209,7 +205,7 @@ namespace RpgGame {
 
 			Equipment* e = &character.allEquipment[EEquipmentSlot::MeleeWeapon];
 			float atkDmg = GetCharacterAttackPower(e, &persona.stats);
-			dmg = std::round(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+			dmg = std::lrint(SubtractDefense(atkDmg, &defendant.stats, nullptr));
 		}
 		else
 		{
@@ -245,7 +241,7 @@ namespace RpgGame {
 		}
 
 		float atkDmg = GetCharacterAttackPower(e, &persona.stats);
-		int dmg = std::round(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+		int dmg = std::lround(SubtractDefense(atkDmg, &defendant.stats, nullptr));
 		e->rounds--;
 
 		defendantCombatComponent.hp -= dmg;
@@ -347,7 +343,7 @@ namespace RpgGame {
 		OT_INFO("Combat Finished.");
 	}
 
-	bool CombatSystem::IsPlayerInputValid(std::string userInput, int amountOptions)
+	bool CombatSystem::IsPlayerInputValid(std::string userInput, uint8_t amountOptions)
 	{
 		if (userInput.size() != 1)
 		{
@@ -363,7 +359,7 @@ namespace RpgGame {
 		}
 
 		int entry = std::stoi(userInput);
-		if (entry < 0 || entry >= amountOptions)//entry >= (int)ECombatAction::_MAX_ENTRY)
+		if (entry < 0 || entry >= (int)amountOptions)//entry >= (int)ECombatAction::_MAX_ENTRY)
 		{
 			OT_WARN("Invalid input, outside of range. Please try again");
 			return false;
@@ -412,7 +408,7 @@ namespace RpgGame {
 		std::string userInput;
 		std::cin >> userInput;
 
-		if (!IsPlayerInputValid(userInput, skills.size() + 1))
+		if (!IsPlayerInputValid(userInput, (uint8_t)skills.size() + 1))
 			return AskPlayerTarget();
 
 		int entry = std::stoi(userInput);
@@ -441,7 +437,7 @@ namespace RpgGame {
 		std::string userInput;
 		std::cin >> userInput;
 
-		if (!IsPlayerInputValid(userInput, aliveEntities.size()))
+		if (!IsPlayerInputValid(userInput, (int)aliveEntities.size()))
 			return AskPlayerTarget();
 
 		int entry = std::stoi(userInput);

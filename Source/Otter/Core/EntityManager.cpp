@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "Otter/Log.h"
+#include "Otter/Utils/Log.h"
 
 namespace Otter {
 

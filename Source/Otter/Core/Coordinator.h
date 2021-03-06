@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Otter/Types.h"
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "SystemManager.h"

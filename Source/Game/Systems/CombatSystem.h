@@ -72,7 +72,7 @@ namespace RpgGame {
 		void FinishCombat();
 
 		// Verifies std::cin input number
-		bool IsPlayerInputValid(std::string userInput, int amountOptions);
+		bool IsPlayerInputValid(std::string userInput, uint8_t amountOptions);
 
 		// Asks the player for a supported action.
 		ECombatAction AskPlayerAction();

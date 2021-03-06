@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Otter.h" />
     <ClInclude Include="Source\Otter\Types\OArray.h" />
     <ClInclude Include="Source\Game\Systems\Compendium.h" />
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
@@ -18,7 +19,6 @@
     <ClInclude Include="Source\Game\Components\PersonaComponent.h" />
     <ClInclude Include="Source\Game\Data\PersonaData.h" />
     <ClInclude Include="Source\Game\SandboxApp.h" />
-    <ClInclude Include="Source\Otter.h" />
     <ClInclude Include="Source\Otter\Application.h" />
     <ClInclude Include="Source\Otter\Components\Component.h" />
     <ClInclude Include="Source\Otter\Components\Transform2DComponent.h" />
@@ -29,9 +29,9 @@
     <ClInclude Include="Source\Otter\Core\EntityManager.h" />
     <ClInclude Include="Source\Otter\Core\System.h" />
     <ClInclude Include="Source\Otter\Core\SystemManager.h" />
-    <ClInclude Include="Source\Otter\Core\Types.h" />
+    <ClInclude Include="Source\Otter\Types.h" />
     <ClInclude Include="Source\Otter\EntryPoint.h" />
-    <ClInclude Include="Source\Otter\Log.h" />
+    <ClInclude Include="Source\Otter\Utils\Log.h" />
     <ClInclude Include="Source\Otter\Math\Vector2.h" />
     <ClInclude Include="Source\Game\Systems\CombatSystem.h" />
     <ClInclude Include="Source\Otter\Utils\Filesystem.h" />
@@ -45,7 +45,7 @@
     <ClCompile Include="Source\Otter\Core\Coordinator.cpp" />
     <ClCompile Include="Source\Otter\Core\EntityManager.cpp" />
     <ClCompile Include="Source\Otter\Core\SystemManager.cpp" />
-    <ClCompile Include="Source\Otter\Log.cpp" />
+    <ClCompile Include="Source\Otter\Utils\Log.cpp" />
     <ClCompile Include="Source\Game\Systems\CombatSystem.cpp" />
     <ClCompile Include="Source\Otter\Utils\Filesystem.cpp" />
     <ClCompile Include="Source\Otter\Types\OString.cpp" />

@@ -14,12 +14,12 @@ namespace Otter {
 		inline static std::string gameSubDirectory = "Game/";
 
 		// Returns the path to the Otter asset directory
-		static fs::path GetAssetDirectoryEngine();
+		static const fs::path GetAssetDirectoryEngine();
 
 		// Returns the path to the Game asset directory
-		static fs::path GetAssetDirectoryGame();
+		static const fs::path GetAssetDirectoryGame();
 
-		// Reads an entire file into a string.
-		static std::string ReadFile(fs::path filePath);
+		// Reads an entire file into a string. Accepts mixed folder separators and asserts the file's existence.
+		static std::string ReadFile(fs::path &filePath);
 	};
 }

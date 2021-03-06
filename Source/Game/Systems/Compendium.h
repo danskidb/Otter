@@ -3,6 +3,7 @@
 #include <vector>
 #include "Data/PersonaData.h"
 #include <array>
+#include "Otter/Utils/Filesystem.h"
 #include "Otter/Core/System.h"
 
 using namespace Otter;
@@ -30,10 +31,10 @@ namespace RpgGame {
 		bool FindCharacterById(std::string characterId, Character &outCharacter);
 
 	private:
-		const std::string personaJsonPath = "\PersonaData.json";
-		const std::string skillsJsonPath = "\Skills.json";
-		const std::string characterJsonPath = "\Characters.json";
-		const std::string equipmentJsonPath = "\Equipment.json";
+		const std::string personaJsonPath = "PersonaData.json";
+		const std::string skillsJsonPath = "skills.json";
+		const std::string characterJsonPath = "Characters.json";
+		const std::string equipmentJsonPath = "Equipment.json";
 		const std::array<EElement, 10> elemsImportOrder = { EElement::Physical, EElement::Gun, EElement::Fire, EElement::Ice, EElement::Electric, EElement::Wind, EElement::Psychic, EElement::Nuclear, EElement::Bless, EElement::Curse };
 
 		std::map<std::string, Persona> personaCompendium;

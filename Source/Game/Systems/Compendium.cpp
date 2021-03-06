@@ -1,11 +1,10 @@
 #include "Compendium.h"
 #include <nlohmann/json.hpp>
 #include <magic_enum.hpp>
-#include "Otter/Utils/Filesystem.h"
 #include <iostream>
 #include <array>
 #include <limits>
-#include "Otter/Log.h"
+#include "Otter/Utils/Log.h"
 
 using json = nlohmann::json;
 using namespace Otter;
@@ -29,7 +28,6 @@ namespace RpgGame {
 	{
 		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
 		absolutePath /= personaJsonPath;
-		fs::canonical(absolutePath);
 		std::string fullJsonData = Filesystem::ReadFile(absolutePath);	//todo: see if we can directly get this into a json obj from the file buffer
 
 		// Import persona database
@@ -96,7 +94,6 @@ namespace RpgGame {
 	{
 		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
 		absolutePath /= skillsJsonPath;
-		fs::canonical(absolutePath);
 		std::string fullJsonData = Filesystem::ReadFile(absolutePath);
 
 		// Import skill database
@@ -182,7 +179,6 @@ namespace RpgGame {
 	{
 		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
 		absolutePath /= equipmentJsonPath;
-		fs::canonical(absolutePath);
 		std::string fullJsonData = Filesystem::ReadFile(absolutePath);
 
 		json j = json::parse(fullJsonData);
@@ -225,7 +221,6 @@ namespace RpgGame {
 	{
 		fs::path absolutePath = Filesystem::GetAssetDirectoryGame();
 		absolutePath /= characterJsonPath;
-		fs::canonical(absolutePath);
 		std::string fullJsonData = Filesystem::ReadFile(absolutePath);
 
 		json j = json::parse(fullJsonData);

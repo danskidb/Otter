@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <bitset>
 
+#include "Types/OArray.h"
+#include "Types/OString.h"
+
 namespace Otter {
 
 	using EntityId = std::uint32_t;

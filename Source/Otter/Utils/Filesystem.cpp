@@ -1,10 +1,10 @@
 #include "Filesystem.h"
-#include "Otter/Log.h"
+#include "Otter/Utils/Log.h"
 #include <fstream>
 
 namespace Otter {
 
-	fs::path Filesystem::GetAssetDirectoryEngine()
+	const fs::path Filesystem::GetAssetDirectoryEngine()
 	{
 		fs::path pth = fs::current_path();
 		pth /= assetDirectory;
@@ -16,7 +16,7 @@ namespace Otter {
 		return fs::canonical(pth);
 	}
 
-	fs::path Filesystem::GetAssetDirectoryGame()
+	const fs::path Filesystem::GetAssetDirectoryGame()
 	{
 		fs::path pth = fs::current_path();
 		pth /= assetDirectory;
@@ -28,25 +28,24 @@ namespace Otter {
 		return fs::canonical(pth);
 	}
 
-	std::string Filesystem::ReadFile(fs::path filePath)
+	std::string Filesystem::ReadFile(fs::path &filePath)
 	{
-		fs::path fp = filePath;
-		fp.make_preferred();
+		fs::path fp = filePath.make_preferred();
 		OT_ASSERT(fs::exists(fp), "Path " + fp.string() + " does not exist!");
 		OT_CORE_INFO("Attempting to read " + fp.string());
 
 		// Open the stream to 'lock' the file.
-		std::ifstream f(filePath, std::ios::in | std::ios::binary);
+		std::ifstream fileStream(fs::canonical(filePath), std::ios::in | std::ios::binary);
 
 		// Obtain the size of the file.
-		const auto sz = fs::file_size(filePath);
+		const auto fileSize = fs::file_size(filePath);
 
 		// Create a buffer.
-		std::string result(sz, '\0');
+		std::string result(fileSize, '\0');
 
 		// Read the whole file into the buffer.
-		f.read(result.data(), sz);
-		f.close();
+		fileStream.read(result.data(), fileSize);
+		fileStream.close();
 
 		return result;
 	}

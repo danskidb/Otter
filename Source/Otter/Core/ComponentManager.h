@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Types.h"
-#include "Otter/Log.h"
+#include "Otter/Types.h"
+#include "Otter/Utils/Log.h"
 #include "ComponentArray.h"
 #include <unordered_map>
 #include <memory>
