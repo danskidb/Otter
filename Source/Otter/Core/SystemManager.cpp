@@ -2,7 +2,7 @@
 
 namespace Otter {
 
-	void SystemManager::EntityDestroyed(EntityId entityId)
+	void SystemManager::EntityDestroyed(const EntityId& entityId)
 	{
 		// Erase a destroyed entity from all system lists
 		// mEntities is a set so no check needed
@@ -13,7 +13,7 @@ namespace Otter {
 		}
 	}
 
-	void SystemManager::EnitySignatureChanged(EntityId entityId, Signature entitySignature)
+	void SystemManager::EnitySignatureChanged(const EntityId& entityId, const Signature& entitySignature)
 	{
 		// Notify each system that an entity's signature changed
 		for (auto const& pair : systems)

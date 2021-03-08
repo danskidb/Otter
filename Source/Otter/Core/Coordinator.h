@@ -10,9 +10,6 @@ namespace Otter {
 
 	class Coordinator
 	{
-		static Coordinator* instance;
-		Coordinator() {}
-
 	public:
 		static Coordinator* GetInstance() {
 			if (!instance)
@@ -32,9 +29,9 @@ namespace Otter {
 		
 		EntityId CreateEntity();
 		
-		void DestroyEntity(EntityId entityId);
+		void DestroyEntity(const EntityId& entityId);
 
-		void OnTick(float deltaTime);
+		void OnTick(const float& deltaTime);
 
 		template<typename T> 
 		void RegisterComponent()
@@ -43,7 +40,7 @@ namespace Otter {
 		}
 
 		template<typename T>
-		void AddComponent(EntityId entityId, T component)
+		void AddComponent(const EntityId& entityId, T component)
 		{
 			componentManager->AddComponent<T>(entityId, component);
 
@@ -55,7 +52,7 @@ namespace Otter {
 		}
 
 		template<typename T>
-		void RemoveComponent(EntityId entityId)
+		void RemoveComponent(const EntityId& entityId)
 		{
 			componentManager->RemoveComponent<T>(entityId);
 
@@ -67,7 +64,7 @@ namespace Otter {
 		}
 
 		template<typename T>
-		bool HasComponent(EntityId entityId)
+		bool HasComponent(const EntityId& entityId)
 		{
 			Signature s;
 			s.set(componentManager->GetComponentType<T>(), true);
@@ -75,7 +72,7 @@ namespace Otter {
 		}
 
 		template<typename T>
-		T& GetComponent(EntityId entityId)
+		T* GetComponent(const EntityId& entityId)
 		{
 			return componentManager->GetComponent<T>(entityId);
 		}
@@ -93,7 +90,7 @@ namespace Otter {
 		}
 
 		template<typename T>
-		void SetSystemSignature(Signature signature)
+		void SetSystemSignature(const Signature& signature)
 		{
 			systemManager->SetSignature<T>(signature);
 		}
@@ -105,6 +102,11 @@ namespace Otter {
 		}
 
 	private:
+		static Coordinator* instance;
+		Coordinator() {};
+		Coordinator& operator=(const Coordinator&) = delete;
+		Coordinator(const Coordinator&) = delete;
+
 		std::unique_ptr<ComponentManager> componentManager;
 		std::unique_ptr<EntityManager> entityManager;
 		std::unique_ptr<SystemManager> systemManager;

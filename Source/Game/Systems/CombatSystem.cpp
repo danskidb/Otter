@@ -26,8 +26,8 @@ namespace RpgGame {
 		for (EntityId characterEntity : _characters)
 		{
 			OT_ASSERT(coordinator->HasComponent<CharacterComponent>(characterEntity), "Character does not have a CharacterComponent!");
-			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(characterEntity);
-			Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+			CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(characterEntity);
+			Equipment* e = &character->allEquipment[EEquipmentSlot::RangeWeapon];
 			e->RefillAmmo();
 		}
 		characters = _characters;
@@ -61,12 +61,12 @@ namespace RpgGame {
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();
 		EntityId entity = turnOrder[currentTurn];
-		CombatComponent& combatData = coordinator->GetComponent<CombatComponent>(entity);
+		CombatComponent* combatData = coordinator->GetComponent<CombatComponent>(entity);
 
 		if (currentTurn == 0)
 			DebugPrintState();
 
-		if (!combatData.IsAlive())
+		if (!combatData->IsAlive())
 		{
 			EndTurn();
 			return;
@@ -76,7 +76,7 @@ namespace RpgGame {
 		if (IsCharacter(entity)) 
 		{
 			ECombatAction playerAction = AskPlayerAction();
-			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entity);
+			CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(entity);
 
 			switch (playerAction)
 			{
@@ -87,7 +87,7 @@ namespace RpgGame {
 				}
 
 				case ECombatAction::Gun: {
-					Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+					Equipment* e = &character->allEquipment[EEquipmentSlot::RangeWeapon];
 					if (e->rounds > 0)
 					{
 						int shotsToFire = e->rounds;
@@ -159,8 +159,8 @@ namespace RpgGame {
 
 		for (EntityId entity : characterOrOpponentVector)
 		{
-			CombatComponent& combatData = coordinator->GetComponent<CombatComponent>(entity);
-			if (combatData.IsAlive())
+			CombatComponent* combatData = coordinator->GetComponent<CombatComponent>(entity);
+			if (combatData->IsAlive())
 				result.push_back(entity);
 		}
 
@@ -194,18 +194,18 @@ namespace RpgGame {
 	void CombatSystem::PerformMeleeAttack(EntityId performer, EntityId target)
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();
-		CombatComponent& targetCombatComponent = coordinator->GetComponent<CombatComponent>(target);
+		CombatComponent* targetCombatComponent = coordinator->GetComponent<CombatComponent>(target);
 
 		int dmg;
 		if (coordinator->HasComponent<CharacterComponent>(performer))
 		{
-			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(performer);
-			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(performer);
-			PersonaComponent& defendant = coordinator->GetComponent<PersonaComponent>(target);
+			CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(performer);
+			PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(performer);
+			PersonaComponent* defendant = coordinator->GetComponent<PersonaComponent>(target);
 
-			Equipment* e = &character.allEquipment[EEquipmentSlot::MeleeWeapon];
-			float atkDmg = GetCharacterAttackPower(e, &persona.stats);
-			dmg = std::lrint(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+			Equipment* e = &character->allEquipment[EEquipmentSlot::MeleeWeapon];
+			float atkDmg = GetCharacterAttackPower(e, &persona->stats);
+			dmg = std::lrint(SubtractDefense(atkDmg, &defendant->stats, nullptr));
 		}
 		else
 		{
@@ -213,10 +213,10 @@ namespace RpgGame {
 			dmg = GetLevel(performer);
 		}
 
-		targetCombatComponent.hp -= dmg;
+		targetCombatComponent->hp -= dmg;
 		OT_INFO(GetName(performer) + " attacked " + GetName(target) + " with Melee for " + std::to_string(dmg) + " damage.");
 
-		if (!targetCombatComponent.IsAlive())
+		if (!targetCombatComponent->IsAlive())
 			OT_INFO(GetName(target) + " fainted.");
 
 		EndTurn();
@@ -227,27 +227,27 @@ namespace RpgGame {
 		Coordinator* coordinator = Coordinator::GetInstance();
 
 		OT_ASSERT(coordinator->HasComponent<CharacterComponent>(performer), "PerformRangedAttack: performer is not a character!");
-		CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(performer);
+		CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(performer);
 
-		PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(performer);
-		PersonaComponent& defendant = coordinator->GetComponent<PersonaComponent>(target);
-		CombatComponent& defendantCombatComponent = coordinator->GetComponent<CombatComponent>(target);
+		PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(performer);
+		PersonaComponent* defendant = coordinator->GetComponent<PersonaComponent>(target);
+		CombatComponent* defendantCombatComponent = coordinator->GetComponent<CombatComponent>(target);
 
-		Equipment* e = &character.allEquipment[EEquipmentSlot::RangeWeapon];
+		Equipment* e = &character->allEquipment[EEquipmentSlot::RangeWeapon];
 		if (e->rounds <= 0)
 		{
 			OT_INFO(GetName(performer) + " attempted to fire a gun with no rounds remaining.");
 			return;
 		}
 
-		float atkDmg = GetCharacterAttackPower(e, &persona.stats);
-		int dmg = std::lround(SubtractDefense(atkDmg, &defendant.stats, nullptr));
+		float atkDmg = GetCharacterAttackPower(e, &persona->stats);
+		int dmg = std::lround(SubtractDefense(atkDmg, &defendant->stats, nullptr));
 		e->rounds--;
 
-		defendantCombatComponent.hp -= dmg;
+		defendantCombatComponent->hp -= dmg;
 		OT_INFO(GetName(performer) + " attacked " + GetName(target) + " with Range for " + std::to_string(dmg) + " damage. They have " + std::to_string(e->rounds) + " rounds left");
 
-		if (!defendantCombatComponent.IsAlive())
+		if (!defendantCombatComponent->IsAlive())
 			OT_INFO(GetName(target) + " fainted.");
 
 		// todo: if fired a gun this round, you can't do any action other than performing a ranged attack. You can pick a different target or stop to perserve ammo.
@@ -258,20 +258,20 @@ namespace RpgGame {
 	void CombatSystem::PerformSkill(EntityId performer, EntityId target, CombatSkill skill)
 	{
 		Coordinator* coordinator = Coordinator::GetInstance();
-		PersonaComponent& performerPersona = coordinator->GetComponent<PersonaComponent>(performer);
-		CombatComponent& performerCombatData = coordinator->GetComponent<CombatComponent>(performer);
+		PersonaComponent* performerPersona = coordinator->GetComponent<PersonaComponent>(performer);
+		CombatComponent* performerCombatData = coordinator->GetComponent<CombatComponent>(performer);
 
-		PersonaComponent& targetPersona = coordinator->GetComponent<PersonaComponent>(target);
-		CombatComponent& targetCombatData = coordinator->GetComponent<CombatComponent>(target);
+		PersonaComponent* targetPersona = coordinator->GetComponent<PersonaComponent>(target);
+		CombatComponent* targetCombatData = coordinator->GetComponent<CombatComponent>(target);
 
 		// subtract cost
 		switch (skill.costType)
 		{
 			case ECombatSkillCostType::Fixed_SP:
-				performerCombatData.sp -= skill.cost;
+				performerCombatData->sp -= skill.cost;
 				break;
 			case ECombatSkillCostType::Percentage_HP:
-				performerCombatData.hp -= (skill.cost / 100) * performerCombatData.hp;
+				performerCombatData->hp -= (skill.cost / 100) * performerCombatData->hp;
 				break;
 		}
 
@@ -308,8 +308,8 @@ namespace RpgGame {
 		bool allCharactersDead = true;
 		for (EntityId entityId : characters)
 		{
-			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
-			if (combatComponent.IsAlive())
+			CombatComponent* combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
+			if (combatComponent->IsAlive())
 			{
 				allCharactersDead = false;
 				break;
@@ -319,8 +319,8 @@ namespace RpgGame {
 		bool allOpponentsDead = true;
 		for (EntityId entityId : opponents)
 		{
-			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
-			if (combatComponent.IsAlive())
+			CombatComponent* combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
+			if (combatComponent->IsAlive())
 			{
 				allOpponentsDead = false;
 				break;
@@ -391,10 +391,10 @@ namespace RpgGame {
 		EntityId currentTurnEntity = turnOrder[currentTurn];
 		OT_ASSERT(IsCharacter(currentTurnEntity), "Attempted to ask for a skill on a non-character!");
 
-		PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(currentTurnEntity);
+		PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(currentTurnEntity);
 		std::string userChoice = "Select Skill: ";
 
-		std::vector<CombatSkill> skills = compendium->FindSkillsById(persona.activeSkills);
+		std::vector<CombatSkill> skills = compendium->FindSkillsById(persona->activeSkills);
 		if (skills.size() <= 0)
 			return false;	//player has no skills so we can't ask them for it.
 
@@ -453,8 +453,8 @@ namespace RpgGame {
 		{
 			EntityId entityId = turnOrder[i];
 
-			CombatComponent& combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
-			if (!combatComponent.IsAlive())
+			CombatComponent* combatComponent = coordinator->GetComponent<CombatComponent>(entityId);
+			if (!combatComponent->IsAlive())
 				continue;
 
 			std::string toPrint;
@@ -464,19 +464,19 @@ namespace RpgGame {
 			else
 				toPrint += "- ";
 
-			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(entityId);
+			PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(entityId);
 			if (coordinator->HasComponent<CharacterComponent>(entityId))
 			{
-				CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
+				CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(entityId);
 
-				toPrint += "Lv. " + std::to_string(character.level) + " " + character.codename;
-				toPrint += " (Lv. " + std::to_string(persona.level) + " " + persona.name + ")";
-				toPrint += " - " + std::to_string(combatComponent.hp) + "HP / " + std::to_string(combatComponent.sp) + "SP";
+				toPrint += "Lv. " + std::to_string(character->level) + " " + character->codename;
+				toPrint += " (Lv. " + std::to_string(persona->level) + " " + persona->name + ")";
+				toPrint += " - " + std::to_string(combatComponent->hp) + "HP / " + std::to_string(combatComponent->sp) + "SP";
 			}
 			else if (coordinator->HasComponent<PersonaComponent>(entityId))
 			{
-				toPrint += "Lv. " + std::to_string(persona.level) + " " + persona.name;
-				toPrint += " - " + std::to_string(combatComponent.hp) + "HP / " + std::to_string(combatComponent.sp) + "SP";
+				toPrint += "Lv. " + std::to_string(persona->level) + " " + persona->name;
+				toPrint += " - " + std::to_string(combatComponent->hp) + "HP / " + std::to_string(combatComponent->sp) + "SP";
 			}
 
 			OT_INFO(toPrint);
@@ -499,13 +499,13 @@ namespace RpgGame {
 
 		if (IsCharacter(entityId))
 		{
-			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
-			return character.codename;
+			CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(entityId);
+			return character->codename;
 		}
 		else
 		{
-			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(entityId);
-			return persona.name;
+			PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(entityId);
+			return persona->name;
 		}
 	}
 
@@ -515,13 +515,13 @@ namespace RpgGame {
 
 		if (IsCharacter(entityId))
 		{
-			CharacterComponent& character = coordinator->GetComponent<CharacterComponent>(entityId);
-			return character.level;
+			CharacterComponent* character = coordinator->GetComponent<CharacterComponent>(entityId);
+			return character->level;
 		}
 		else
 		{
-			PersonaComponent& persona = coordinator->GetComponent<PersonaComponent>(entityId);
-			return persona.level;
+			PersonaComponent* persona = coordinator->GetComponent<PersonaComponent>(entityId);
+			return persona->level;
 		}
 	}
 }

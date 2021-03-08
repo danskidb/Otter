@@ -26,7 +26,7 @@ namespace Otter {
 
 		// Register what component types a system requires on an entity
 		template<typename T> 
-		void SetSignature(Signature signature)
+		void SetSignature(const Signature& signature)
 		{
 			const char* typeName = typeid(T).name();
 
@@ -36,9 +36,9 @@ namespace Otter {
 			signatures.insert({ typeName, signature });
 		}
 
-		void EntityDestroyed(EntityId entityId);
+		void EntityDestroyed(const EntityId& entityId);
 
-		void EnitySignatureChanged(EntityId entityId, Signature entitySignature);
+		void EnitySignatureChanged(const EntityId& entityId, const Signature& entitySignature);
 
 		template<typename T>
 		std::shared_ptr<T> GetSystem()

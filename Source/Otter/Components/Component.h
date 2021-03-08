@@ -22,6 +22,6 @@ namespace Otter {
 		virtual void OnEntityPreDestruct() {}
 
 		// Called every update loop
-		virtual void OnTick(float deltaTime) {}
+		virtual void OnTick(const float& deltaTime) {}
 	};
 }

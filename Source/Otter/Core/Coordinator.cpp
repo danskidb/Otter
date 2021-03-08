@@ -2,6 +2,8 @@
 
 namespace Otter {
 
+	Coordinator* Coordinator::instance = 0;
+
 	void Coordinator::Init()
 	{
 		componentManager = std::make_unique<ComponentManager>();
@@ -14,14 +16,14 @@ namespace Otter {
 		return entityManager->CreateEntity();
 	}
 
-	void Coordinator::DestroyEntity(EntityId entityId)
+	void Coordinator::DestroyEntity(const EntityId& entityId)
 	{
 		entityManager->DestroyEntity(entityId);
 		componentManager->EntityDestroyed(entityId);
 		systemManager->EntityDestroyed(entityId);
 	}
 
-	void Coordinator::OnTick(float deltaTime)
+	void Coordinator::OnTick(const float& deltaTime)
 	{
 		componentManager->OnTick(deltaTime);
 	}

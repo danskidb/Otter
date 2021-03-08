@@ -23,7 +23,7 @@ namespace Otter {
 		return id;
 	}
 
-	void EntityManager::DestroyEntity(EntityId entityId)
+	void EntityManager::DestroyEntity(const EntityId& entityId)
 	{
 		OT_ASSERT(entityId < MAX_ENTITIES, "Entity out of range.");
 
@@ -33,13 +33,13 @@ namespace Otter {
 		--livingEntityCount;
 	}
 
-	void EntityManager::SetSignature(EntityId entityId, Signature signature)
+	void EntityManager::SetSignature(const EntityId& entityId, const Signature& signature)
 	{
 		OT_ASSERT(entityId < MAX_ENTITIES, "Entity out of range.");
 		signatures[entityId] = signature;
 	}
 
-	Signature EntityManager::GetSignature(EntityId entityId)
+	Signature EntityManager::GetSignature(const EntityId& entityId)
 	{
 		OT_ASSERT(entityId < MAX_ENTITIES, "Entity out of range.");
 		return signatures[entityId];

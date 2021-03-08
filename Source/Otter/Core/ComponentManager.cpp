@@ -2,7 +2,7 @@
 
 namespace Otter {
 
-	void ComponentManager::EntityDestroyed(EntityId entityId)
+	void ComponentManager::EntityDestroyed(const EntityId& entityId)
 	{
 		// Notify each component array that an entity has been destroyed
 		// If it has a component for that entity, it will remove it
@@ -14,7 +14,7 @@ namespace Otter {
 		}
 	}
 
-	void ComponentManager::OnTick(float deltaTime)
+	void ComponentManager::OnTick(const float& deltaTime)
 	{
 		for (std::pair<const char*, std::shared_ptr<IComponentArray>> entry : componentArrays)
 		{

@@ -14,9 +14,9 @@ namespace Otter {
 	class ComponentManager
 	{
 	public:
-		void EntityDestroyed(EntityId entityId);
+		void EntityDestroyed(const EntityId& entityId);
 
-		void OnTick(float deltaTime);
+		void OnTick(const float& deltaTime);
 
 		template<typename T>
 		void RegisterComponent()
@@ -49,21 +49,21 @@ namespace Otter {
 		}
 
 		template<typename T>
-		void AddComponent(EntityId entityId, T component)
+		void AddComponent(const EntityId& entityId, T component)
 		{
 			// Add a component to the array for an entity
 			GetComponentArray<T>()->InsertData(entityId, component);
 		}
 
 		template<typename T>
-		void RemoveComponent(EntityId entityId)
+		void RemoveComponent(const EntityId& entityId)
 		{
 			// Remove a component from the array for an entity
 			GetComponentArray<T>()->RemoveData(entityId);
 		}
 
 		template<typename T>
-		T& GetComponent(EntityId entityId)
+		T* GetComponent(const EntityId& entityId)
 		{
 			// Get a reference to a component from the array for an entity
 			return GetComponentArray<T>()->GetData(entityId);

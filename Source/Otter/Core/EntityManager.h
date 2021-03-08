@@ -14,11 +14,11 @@ namespace Otter {
 
 		EntityId CreateEntity();
 
-		void DestroyEntity(EntityId entityId);
+		void DestroyEntity(const EntityId& entityId);
 
-		void SetSignature(EntityId entityId, Signature signature);
+		void SetSignature(const EntityId& entityId, const Signature& signature);
 
-		Signature GetSignature(EntityId entityId);
+		Signature GetSignature(const EntityId& entityId);
 
 	private:
 		// Queue of unused entityIds
