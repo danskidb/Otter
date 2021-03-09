@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Otter\Types\OList.h" />
     <ClInclude Include="Source\Otter.h" />
     <ClInclude Include="Source\Otter\Types\OArray.h" />
     <ClInclude Include="Source\Game\Systems\Compendium.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Source\Otter\Types\OString.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Otter\Types\OList.cpp" />
     <ClCompile Include="Source\Game\Systems\Compendium.cpp" />
     <ClCompile Include="Source\Game\SandboxApp.cpp" />
     <ClCompile Include="Source\Otter\Application.cpp" />

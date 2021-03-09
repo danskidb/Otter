@@ -90,6 +90,9 @@
     <ClInclude Include="Source\Otter\Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Otter\Types\OList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\SandboxApp.cpp">
@@ -123,6 +126,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Otter\Utils\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Otter\Types\OList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
