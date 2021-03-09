@@ -6,9 +6,9 @@ namespace Otter {
 	{
 		// Erase a destroyed entity from all system lists
 		// mEntities is a set so no check needed
-		for (auto const& pair : systems)
+		for (const auto& pair : systems)
 		{
-			auto const& system = pair.second;
+			const auto& system = pair.second;
 			system->entities.erase(entityId);
 		}
 	}
@@ -16,11 +16,11 @@ namespace Otter {
 	void SystemManager::EnitySignatureChanged(const EntityId& entityId, const Signature& entitySignature)
 	{
 		// Notify each system that an entity's signature changed
-		for (auto const& pair : systems)
+		for (const auto& pair : systems)
 		{
-			auto const& type = pair.first;
-			auto const& system = pair.second;
-			auto const& systemSignature = signatures[type];
+			const auto& type = pair.first;
+			const auto& system = pair.second;
+			const auto& systemSignature = signatures[type];
 
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
@@ -34,5 +34,4 @@ namespace Otter {
 			}
 		}
 	}
-
 }
