@@ -12,7 +12,7 @@ namespace Otter
 		OString();
 		OString(const char* toCopy);
 		OString(const OString& toCopy);
-		OString(OString&& toMove);
+		OString(OString&& toMove) noexcept;
 		~OString();
 
 	protected:

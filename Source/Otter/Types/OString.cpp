@@ -1,6 +1,7 @@
 #include "OString.h"
 #include <stdio.h>
 #include <string.h>
+#include <type_traits>
 
 namespace Otter
 {
@@ -11,7 +12,6 @@ namespace Otter
 		content = new char[1];
 		content[0] = '\0';		// end of char signifier
 		contentSize = 0;
-		printf("Created empty OString\n");
 	}
 
 	OString::OString(const char* toCopy)
@@ -38,17 +38,17 @@ namespace Otter
 		contentSize = toCopy.contentSize;
 		content = new char[contentSize + 1];	// leave room for \0
 		memcpy(content, toCopy.content, contentSize + 1);
-		printf("Copied OString\n");
+		printf("Copied OString %s\n", content);
 	}
 
-	OString::OString(OString&& toMove)
+	OString::OString(OString&& toMove) noexcept
 	{
-		contentSize = toMove.contentSize;
-		content = toMove.content;
+		contentSize = std::move(toMove.contentSize);
+		content = std::move(toMove.content);
 
 		toMove.content = nullptr;
 		toMove.contentSize = 0;
-		printf("Moved OString\n");
+		printf("Moved OString %s\n", content);
 	}
 
 	OString::~OString()
@@ -69,6 +69,8 @@ namespace Otter
 	{
 		if (this != &toCopyAssign)
 		{
+			delete[] content;
+
 			contentSize = toCopyAssign.contentSize;
 			content = new char[contentSize + 1];	// leave room for \0
 			memcpy(content, toCopyAssign.content, contentSize + 1);
@@ -82,8 +84,10 @@ namespace Otter
 	{
 		if (this != &toMoveAssign)
 		{
-			contentSize = toMoveAssign.contentSize;
-			content = toMoveAssign.content;
+			delete[] content;
+
+			contentSize = std::move(toMoveAssign.contentSize);
+			content = std::move(toMoveAssign.content);
 
 			toMoveAssign.content = nullptr;
 			toMoveAssign.contentSize = 0;
